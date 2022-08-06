@@ -177,7 +177,7 @@ const remove_shedule_tweet = async (index:number) => {
             console.log("error :", err);
         })
 
-	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id)
+	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             scheduleInfo.value = await response.data;
 	    })
@@ -236,7 +236,7 @@ const editTweet = async(index:number) => {
         edit_date.value = undefined;
         edit_tweet.value = '';
     }
-    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id)
+    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             scheduleInfo.value = await response.data;
 	    })
@@ -344,7 +344,7 @@ const tweet_for_someone = async() => {
             message_tweet.value = "The message has been Programmed."
             hide_message();
         }
-	    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id)
+	    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	        .then(async(response) => {
                 scheduleInfo.value = await response.data;
 	        })

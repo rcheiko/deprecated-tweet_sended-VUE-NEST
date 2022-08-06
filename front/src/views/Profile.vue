@@ -46,7 +46,6 @@ onBeforeMount(async () => {
 	await axios.get(import.meta.env.VITE_BACKEND_URL + '/users/infoUser/' + user.id, {headers: authHeader()})
 	    .then(async (response) => {
 			infoUser.value = await response.data;
-			console.log(infoUser.value);
 	    })
 	    .catch((e: Error) => {
 	        console.log('error : ' + e);

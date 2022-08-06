@@ -159,7 +159,7 @@ const { mutate: _createTweetGif_2, onDone: _createTweetGif_2Done } = useMutation
 
 onBeforeMount(async () => {
     let user = await JSON.parse(localStorage.getItem('user') || '');
-	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule_for_me/' + user.id)
+	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule_for_me/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             scheduleInfo.value = await response.data;
 	    })
@@ -216,7 +216,7 @@ const remove_shedule_tweet_for_me = async (index:number) => {
         .catch((err) => {
             console.log("error :", err);
         })
-	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule_for_me/' + user.id)
+	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule_for_me/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             scheduleInfo.value = await response.data;
 	    })
@@ -245,7 +245,6 @@ const edit_shedule_tweet_for_me = async (index:number) => {
 
 const tweet = async () => {
     let user = await JSON.parse(localStorage.getItem('user') || '');
-    console.log('USER :', user)
 
     if (date_for_me.value != undefined) {
         if (gifToSend.value === undefined) {
@@ -277,7 +276,7 @@ const tweet = async () => {
             message_tweet_for_me.value = "The message has been Programmed."
             hide_message_for_me();
         }
-	    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule_for_me/' + user.id)
+	    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule_for_me/' + user.id, {headers: authHeader()})
 	        .then(async(response) => {
                 scheduleInfo.value = await response.data;
 	        })
@@ -358,7 +357,7 @@ const editTweet = async(index:number) => {
         edit_date_for_me.value = undefined;
         edit_tweet_for_me.value = '';
     }
-    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule_for_me/' + user.id)
+    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule_for_me/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             scheduleInfo.value = await response.data;
 	    })

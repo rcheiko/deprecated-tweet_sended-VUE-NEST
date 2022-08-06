@@ -3,18 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
-import authHeader from '../services/auth-header'
 
-const test = async() => {
-	await axios.get(import.meta.env.VITE_BACKEND_URL + '/users/giveUsersTweet/1540235765317246976', {headers: authHeader()})
-	    .then((response) => {
-            console.log(response);
-	    })
-	    .catch((err: Error) => {
-	        console.log('error : ' + err);
-	    })
-}
 </script>
 
 <style scoped>

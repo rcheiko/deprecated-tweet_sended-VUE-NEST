@@ -62,6 +62,7 @@ onBeforeMount(async () => {
             localStorage.setItem("user", JSON.stringify(userJWT));
             await router.push('/')
             login.value = true;
+            window.location.reload();
         })
           .catch((e: Error) => {
             console.log('error : ' + e);
@@ -83,7 +84,6 @@ const parseJwt = (token:string) => {
 const auth = () => {
   axios.get(import.meta.env.VITE_BACKEND_URL + '/auth/', {})
 	  .then((response) => {
-      console.log(response)
 		  localStorage.setItem("oauth", JSON.stringify(response.data));
       window.location.href = response.data.url
 	  })
