@@ -13,16 +13,21 @@ import router from '../router'
 const pic = ref('')
 
 const addPicture = async(e:any) => {
-    const file = await e.target.files;
-    const test = await e.target
-    // console.log(file);
-    var reader = new FileReader();
-    reader.onload = async (e) => {
-    //   pic.value = await e;
-      console.log(e);
-      
-    }
+    const file = await e.target.files[0];
+    const test = URL.createObjectURL(file);
+    let formData = new FormData();
+    formData.append("image", file);
+    console.log(test);
     
+    
+    // console.log(file);
+    // var reader = new FileReader();
+    // reader.onload = async (e) => {
+    //   pic.value = await e;
+    //   console.log(e);
+      
+    // }
+
     // console.log(pic.value);
     // pic.value = file[0].name;
     
