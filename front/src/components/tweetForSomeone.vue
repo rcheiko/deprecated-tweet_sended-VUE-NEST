@@ -39,7 +39,7 @@
         <div class="schedule" v-if="scheduleInfo">
             <p>Schedule Tweet :</p>
             <br>
-            <div v-for="(info, index) in scheduleInfo">
+            <div class="every_tweet" v-for="(info, index) in scheduleInfo">
                 <div class="img-name-tweet">
                     <div class="img-profile" style="margin-right: 5px;" :style="{'background-image':'url(' + info.profile_image_url + ')'}"></div>
                     <p style="margin-left: 5px;">{{info.username}}</p>
@@ -373,6 +373,7 @@ const tweet_for_someone = async() => {
     body{
         font-family: 'BeVietnamPro-SemiBold';
         font-size: 17px;
+        color: var(--dark-grey);
     }
 
     form {
@@ -439,6 +440,7 @@ const tweet_for_someone = async() => {
     	background-repeat: no-repeat;
     	background-size: cover;
         background-position: center;
+        border-radius:5px;
     }
 
     .button {
@@ -494,7 +496,7 @@ const tweet_for_someone = async() => {
         font-size: 16px;
         border: none;
         background-color: var(--light-grey);
-        color: var(--teal);
+        color: var(--blue);
         padding: 1px;
         border-radius: 5px;
         cursor: pointer;
@@ -511,5 +513,12 @@ const tweet_for_someone = async() => {
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .every_tweet {
+        background-color: #dbdbdb;
+        border-radius: 10px;
+        padding: 5px;
+        margin-bottom: 10px;
     }
 </style>

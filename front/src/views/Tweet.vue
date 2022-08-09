@@ -36,7 +36,7 @@
         <div class="schedule" v-if="scheduleInfo">
             <p>My Schedule Tweet :</p>
             <br>
-            <div v-for="(info, index) in scheduleInfo">
+            <div class="every_tweet" v-for="(info, index) in scheduleInfo">
                 <p>Tweet : {{info.tweet}}</p>
                 <p>Schedule : {{info.scheduleTweet}}</p>
                 <div v-if="info.gifLink" class="gif-image img-selected" :style="{'background-image':'url(' + info.gifLink + ')'}"></div>
@@ -379,6 +379,7 @@ const editTweet = async(index:number) => {
     body{
         font-family: 'BeVietnamPro-SemiBold';
         font-size: 17px;
+        color: var(--dark-grey);
     }
 
     form {
@@ -450,6 +451,7 @@ const editTweet = async(index:number) => {
     	background-repeat: no-repeat;
     	background-size: cover;
         background-position: center;
+        border-radius: 5px;
     }
 
     .img-background {
@@ -492,5 +494,12 @@ const editTweet = async(index:number) => {
 
     .schedule {
         margin-top: 10px;
+    }
+
+    .every_tweet {
+        background-color: #dbdbdb;
+        border-radius: 10px;
+        padding: 5px;
+        margin-bottom: 10px;
     }
 </style>
