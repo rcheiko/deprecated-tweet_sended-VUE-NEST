@@ -1,7 +1,7 @@
 <template>
 
-<input type="file" @change="addPicture">
-<div v-if="pic" :style="{'background-image':'url(' + pic + ')'}">aaa</div>
+<input type="file" @change="addPicture" ref="file" accept="image/*" multiple>
+<div v-if="pic" :style="{'background-image':'url(' + pic + ')'}" class="test"></div>
 
 </template>
 
@@ -13,28 +13,33 @@ import router from '../router'
 const pic = ref('')
 
 const addPicture = async(e:any) => {
-    const file = await e.target.files[0];
-    const test = URL.createObjectURL(file);
     let formData = new FormData();
-    formData.append("image", file);
-    console.log(test);
+    // console.log(e.target.files[0]);
+    // console.log('################');
+    // console.log(e.target.files[1]);
     
-    
-    // console.log(file);
-    // var reader = new FileReader();
-    // reader.onload = async (e) => {
-    //   pic.value = await e;
-    //   console.log(e);
-      
-    // }
-
-    // console.log(pic.value);
-    // pic.value = file[0].name;
-    
+    for (let i = 0; e.target.files[i]; i++) {
+        formData.append("file " + i, e.target.files[i]);
+    }
+    await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/file', formData)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            console.log('error :', err);
+        })
+    pic.value = URL.createObjectURL(e.target.files[0]);
 }
 
 </script>
 
 <style scoped>
-
+    .test {
+        width: 120px;
+        height: 120px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        border-radius: 5px;
+    }
 </style>
