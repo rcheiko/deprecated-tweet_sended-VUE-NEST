@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Request, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TwitterApi } from 'twitter-api-v2';
@@ -53,6 +53,4 @@ export class AppController {
     const authLink = await client.generateAuthLink('http://localhost:8000');
     return(authLink);
   }
-
-
 }

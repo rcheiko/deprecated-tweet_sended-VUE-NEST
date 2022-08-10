@@ -9,6 +9,7 @@ import { UsersController } from './users.controller';
 import { HttpModule } from '@nestjs/axios';
 import { jwtStrategy } from 'src/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [HttpModule,
@@ -17,7 +18,8 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       secret: process.env.SECRET_JWT,
       signOptions: { expiresIn: '1d'}
-    })],
+    }),
+    MulterModule.register({ dest: './file/image' })],
   providers: [UsersService, UsersResolver, jwtStrategy,
     {
       provide: 'usersService',
