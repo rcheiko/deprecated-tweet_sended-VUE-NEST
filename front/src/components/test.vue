@@ -14,13 +14,12 @@ const pic = ref('')
 
 const addPicture = async(e:any) => {
     let formData = new FormData();
-    // console.log(e.target.files[0]);
-    // console.log('################');
-    // console.log(e.target.files[1]);
-    
+
     for (let i = 0; e.target.files[i]; i++) {
         formData.append("file " + i, e.target.files[i]);
+        console.log(e.target.files[i]);
     }
+    
     await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/file', formData)
         .then((res) => {
             console.log(res);

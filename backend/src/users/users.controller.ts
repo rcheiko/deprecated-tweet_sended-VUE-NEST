@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtGuard } from 'src/jwt.guard';
-import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
 @Controller('users')
@@ -39,9 +39,8 @@ export class UsersController {
       return this.usersService.tweetPermission(body.tweet, params.user_id_owner, body.user_id, body.gif);
     }
 
-    @Post('file')
     // @UseInterceptors(FileInterceptor('file', {
-      @UseInterceptors(AnyFilesInterceptor())
+      // @UseInterceptors(AnyFilesInterceptor())
         // @UseInterceptors(AnyFilesInterceptor({
         // storage: diskStorage({
         // destination: './file/image',
@@ -51,8 +50,15 @@ export class UsersController {
         // }
       // })
     // }))
-    async test(@UploadedFiles() files: Array<Express.Multer.File>): Promise<any> {
-      console.log('files :', files);
+    @Post('file')
+    @UseInterceptors(FileFieldsInterceptor([
+      { name: 'file1', maxCount: 1 },
+      { name: 'file2', maxCount: 1 },
+    ]))
+    // async test(@UploadedFiles() files: Array<Express.Multer.File>): Promise<any> {
+    async test(@UploadedFiles() files: { file1?: Express.Multer.File[], file2?: Express.Multer.File[] }): Promise<any> {
+      console.log('aaaaa')
+      console.log('FILES :', files);
       return 'File has been uploaded';
     }
 }
