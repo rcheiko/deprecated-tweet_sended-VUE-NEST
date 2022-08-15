@@ -13,7 +13,7 @@ export class TweetController {
       return this.tweetService.InfoTweetScheduleForMe(params.user_id_owner);
     }
 
-    // @UseGuards(JwtGuard)
+    @UseGuards(JwtGuard)
     @Get('schedule/:user_id_owner')
     giveTweetSchedule(@Param() params:any): any {
       return this.tweetService.InfoTweetSchedule(params.user_id_owner);
