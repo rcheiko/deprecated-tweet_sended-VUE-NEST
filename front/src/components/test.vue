@@ -1,6 +1,7 @@
 <template>
 
-<input type="file" @change="addPicture" ref="file" accept="image/*" multiple>
+<label for="file"><i class="fa-solid fa-images icon_picture"></i></label>
+<input style="display:none;" type="file" id="file" @change="addPicture" accept="image/*" multiple />
 <div v-if="pic" :style="{'background-image':'url(' + pic + ')'}" class="test"></div>
 
 </template>
@@ -40,5 +41,10 @@ const addPicture = async(e:any) => {
         background-size: cover;
         background-position: center;
         border-radius: 5px;
+    }
+
+    .icon_picture {
+        font-size: 2em;
+        color: var(--blue);
     }
 </style>
