@@ -1,7 +1,10 @@
 <template>
 
-<label for="file"><i class="fa-solid fa-images icon_picture"></i></label>
-<input style="display:none;" type="file" id="file" @change="addPicture" accept="image/*" multiple />
+<form @submit.prevent="send()">
+    <label for="file"><i class="fa-solid fa-images icon_picture"></i></label>
+    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/*" multiple/>
+    <button type="submit">aaaaa</button>
+</form>
 <div v-if="pic" :style="{'background-image':'url(' + pic + ')'}" class="test"></div>
 
 </template>
@@ -12,15 +15,20 @@ import axios from 'axios'
 import router from '../router'
 
 const pic = ref('')
+const allPicture = ref();
 
 const addPicture = async(e:any) => {
+    allPicture.value = e.target.files;
+    pic.value = URL.createObjectURL(e.target.files[0]);
+}
+
+const send = async() => {
     let formData = new FormData();
 
-    for (let i = 0; e.target.files[i]; i++) {
-        formData.append("file " + i, e.target.files[i]);
-        console.log(e.target.files[i]);
+    for (let i = 0; allPicture.value[i]; i++) {
+        formData.append("file", allPicture.value[i]);
+        console.log(allPicture.value[i]);
     }
-    
     await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/file', formData)
         .then((res) => {
             console.log(res);
@@ -28,7 +36,6 @@ const addPicture = async(e:any) => {
         .catch((err) => {
             console.log('error :', err);
         })
-    pic.value = URL.createObjectURL(e.target.files[0]);
 }
 
 </script>
@@ -46,5 +53,6 @@ const addPicture = async(e:any) => {
     .icon_picture {
         font-size: 2em;
         color: var(--blue);
+        cursor: pointer;
     }
 </style>

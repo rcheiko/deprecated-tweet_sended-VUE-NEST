@@ -6,6 +6,7 @@
                 <label for="_subject">Tweet for someone : </label>
                 <select class="select-twitter-account" v-model="tweetos_selected" required>
                     <option disabled value="">Twitter name</option>
+                    <!-- <option>{{user.username}}</option> -->
                     <option v-for="(res, index) in perm">{{res.data.username}}</option>
                 </select>
                 <textarea v-model="_tweet" id="_subject" name="_subject" placeholder="Tweet something.." required></textarea>
@@ -95,6 +96,8 @@ import axios from 'axios'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
 
+// let user = await JSON.parse(localStorage.getItem('user') || '');
+
 const _tweet = ref('')
 const tweetos_selected = ref('')
 const message_tweet = ref('')
@@ -148,7 +151,7 @@ _removeTweetDone(() => {
 
 onBeforeMount(async () => {
     let user = await JSON.parse(localStorage.getItem('user') || '');
-	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id)
+	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             scheduleInfo.value = await response.data;
 	    })
