@@ -2,8 +2,8 @@
 
 <form @submit.prevent="send()">
     <label for="file"><i class="fa-solid fa-images icon_picture"></i></label>
-    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/*" multiple/>
-    <button type="submit">aaaaa</button>
+    <input style="display:none;" type="file" id="file" @change="addPicture" multiple/>
+    <button type="submit">submit</button>
 </form>
 <div v-if="pic" :style="{'background-image':'url(' + pic + ')'}" class="test"></div>
 

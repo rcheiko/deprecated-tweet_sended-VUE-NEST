@@ -4,6 +4,7 @@ import { JwtGuard } from 'src/jwt.guard';
 import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { saveImageStore } from './validtypes.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -41,26 +42,13 @@ export class UsersController {
     }
 
     @Post('file')
-    @UseInterceptors(AnyFilesInterceptor({
-      limits: {
-        fileSize: 240000,
-    },
-    fileFilter: (req: any, file: any, cb: any) => {
-        if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
-            cb(null, true);
-        } else {
-            return ;
-        }
-    },
-    storage: diskStorage({
-      destination: './file/image',
-        filename: (req: any, file: any, cb: any) => {
-            cb(null, `${Date.now()}_${file.originalname}`);
-        },
-    })
-    }))
+    @UseInterceptors(AnyFilesInterceptor(saveImageStore))
     async test(@UploadedFiles() files: Array<Express.Multer.File>) {
-      console.log('FILES :', files);
+      console.log('files :', files);
+      
+      if (!files[0]?.filename) {
+          console.log('File must be a png/jpg/jpeg/gif');
+        }
       return 'File has been uploaded';
     }
 }
