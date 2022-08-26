@@ -52,14 +52,15 @@ provideApolloClient(apolloClient)
 
   :root {
     --black: #222831;
-    --dark-grey: #393E46;
     --navy: #053742;
     --teal: #00ADB5;
     --blue: #39A2DB;
     --light-blue: #A2DBFA;
     --dark-blue: #7293a5;
     --grey: #EEEEEE;
+    --dark-grey: #393E46;
     --light-grey: #E8F0F2;
+    --light-dark-grey: #8d99ae;
   }
 
   * {

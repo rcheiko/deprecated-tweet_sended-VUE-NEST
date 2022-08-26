@@ -1,18 +1,5 @@
-import { fileTypeFromFile } from "file-type";
 import { diskStorage } from "multer";
-import { from, Observable, of, switchMap } from "rxjs";
 import { v4 as uuidv4 } from 'uuid';
-// const fileTypeFromFile = require('file-type');
-
-type validFileExtension = 'png' | 'jpg' | 'gif';
-type validMimeType = 'image/png' | 'image/jpeg' | 'image/gif';
-
-const validFileExtensions: validFileExtension[] = ['png', 'jpg', 'gif'];
-const validMimeTypes: validMimeType[] = [
-  'image/png',
-  'image/jpeg',
-  'image/gif'
-];
 
 export const saveImageStore = {
     limits: {
@@ -33,11 +20,26 @@ export const saveImageStore = {
   })
 }
 
-export const isFileExtensionSafe = (fullFilePath: string): Observable<boolean> => {
-  return from(fileTypeFromFile(fullFilePath)).pipe(
-    switchMap((fileExtensionAndMimeType: { ext: validFileExtension, mime: validMimeType }) => {
-      // if (!fileExtensionAndMimeType) return of(false);
-      return of(false)
-    })
-  )
-}
+// export const isFileExtensionSafe = (
+//   fullFilePath: string,
+// ): Observable<boolean> => {
+//   return from(fileTypeFromFile(fullFilePath)).pipe(
+//     switchMap(
+//       (fileExtensionAndMimeType: {
+//         ext: validFileExtension;
+//         mime: validMimeType;
+//       }) => {
+//         if (!fileExtensionAndMimeType) return of(false);
+
+//         const isFileTypeLegit = validFileExtensions.includes(
+//           fileExtensionAndMimeType.ext,
+//         );
+//         const isMimeTypeLegit = validMimeTypes.includes(
+//           fileExtensionAndMimeType.mime,
+//         );
+//         const isFileLegit = isFileTypeLegit && isMimeTypeLegit;
+//         return of(isFileLegit);
+//       },
+//     ),
+//   );
+// };

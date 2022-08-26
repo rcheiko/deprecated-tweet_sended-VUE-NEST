@@ -12,8 +12,12 @@
                 <textarea v-model="_tweet" id="_subject" name="_subject" placeholder="Tweet something.." required></textarea>
 
                 <div class="multiple_button_tweet">
-                    <p class="button" @click="display_gif = !display_gif" style="margin-right: 5px;">GIF</p>
+                    <p class="button" @click="display_gif = !display_gif" style="margin-right: 5px;" v-if="pic.length == 0">GIF</p>
+                    <p class="buttonDisabled" style="margin-right: 5px;" v-if="pic.length >= 1">GIF</p>
                     <p class="button" @click="display_schedule = !display_schedule" style="margin-right: 5px; margin-left: 5px;"><i class="fa-solid fa-calendar-days"></i></p>
+                    <label for="file" v-if="gifToSend == undefined"><i class="fa-solid fa-images icon_picture" style="margin-right: 5px; margin-left: 5px;"></i></label>
+                    <label v-if="gifToSend"><i class="fa-solid fa-images icon_picture_disabled" style="margin-right: 5px; margin-left: 5px;"></i></label>
+                    <input style="display:none;" type="file" id="file" @change="addPicture" multiple/>
                     <button class="button" type="submit" style="margin-left: 5px;">Tweet</button>
                 </div>
                 <div v-if="display_gif === true && gifToSend === undefined">
@@ -34,6 +38,14 @@
                 <DatePicker class="schedule" v-if="display_schedule === true" v-model="date" mode="datetime"/>
             </div>
             <button v-if="display_schedule === true" class="button" @click="cancel_schedule()" style="margin-top: 10px;">Cancel schedule</button>
+            <div class="imgDownload">
+                <div class="imgDownloadSub" v-for="(p, index) in pic">
+                    <div :style="{'background-image':'url(' + p + ')'}" class="imgDisplay">
+                        <i class="fa-solid fa-circle-xmark fa-swap-opacity xmark" @click="cancelPicture(index)"></i>
+                    </div>
+                </div>
+            </div>
+            <p>{{errorNumberOfFile}}</p>
             <p>{{message_tweet}}</p>
         </div>
 
@@ -79,7 +91,6 @@
                     <button class="button" @click="gifToSend_edit = undefined">Cancel the gif</button>
                 </div>
             </form>
-
             <DatePicker v-if="display_edit_date" v-model="edit_date" mode="datetime"/>
         </div>
     </div>
@@ -112,6 +123,12 @@ const gifToSend = ref();
 const registerGifs = ref();
 
 const gifSelected = useDebouncedRef('', 1000, false);
+
+const pic = ref(['']);
+pic.value.shift();
+const allPicture = ref(['']);
+allPicture.value.shift();
+const errorNumberOfFile = ref('');
 
 watch(gifSelected, async() => {
   await SearchGifApi();
@@ -364,6 +381,39 @@ const tweet_for_someone = async() => {
     _tweet.value = '';
 }
 
+const addPicture = async(e:any) => {
+    const tmpPicture = e.target.files;
+    if (tmpPicture.length + allPicture.value.length > 4) {
+        console.log('You need to put 4 images maximum');
+        errorNumberOfFile.value = "You need to put 4 images maximum";
+        error_number_file();
+        return;
+    }
+    console.log(tmpPicture.length + allPicture.value.length);
+    
+    for (let i = 0; tmpPicture[i]; i++){
+        allPicture.value.push(tmpPicture[i]);
+    }
+    for (let i = 0; e.target.files[i]; i++){
+        pic.value.push(URL.createObjectURL(e.target.files[i]));
+    }
+    display_gif.value = false;
+    registerGifs.value = undefined;
+    gifToSend.value = undefined;
+    gifSelected.value = undefined;
+}
+
+const error_number_file = () => {
+    setTimeout(() => errorNumberOfFile.value = "", 2500);
+}
+
+const cancelPicture = async(index:number) => {
+    console.log('INDEX :', index);
+    pic.value.splice(index, 1);
+    allPicture.value.splice(index, 1);
+    console.log(allPicture.value);
+}
+
 </script>
 
 <style scoped>
@@ -440,9 +490,6 @@ const tweet_for_someone = async() => {
     .gif-image {
     	width:120px;
     	height:120px;
-    	background-repeat: no-repeat;
-    	background-size: cover;
-        background-position: center;
         border-radius:5px;
     }
 
@@ -523,5 +570,70 @@ const tweet_for_someone = async() => {
         border-radius: 10px;
         padding: 5px;
         margin-bottom: 10px;
+    }
+
+    .icon_picture {
+        font-size: 18px;
+        color: var(--blue);
+        background-color: var(--grey);
+        border: none;
+        border-radius: 10px;
+        padding: 6px;
+        cursor: pointer;
+    }
+
+    .icon_picture_disabled {
+        font-size: 18px;
+        color: var(--light-dark-grey);
+        background-color: var(--grey);
+        border: none;
+        border-radius: 10px;
+        padding: 6px;
+        cursor:not-allowed;
+    }
+
+    .icon_picture:hover {
+        color: var(--teal);
+        opacity: 0.6;
+    }
+    .imgDownload {
+        display:flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: center;
+        margin-top:10px;
+    }
+
+    .imgDownloadSub {
+        margin: 0 5px;
+    }
+    
+    .xmark {
+        position: relative;
+        left: 47px;
+        color:white;
+        cursor: pointer;
+        margin-top: 3px;
+    }
+    .xmark:hover {
+        opacity: 0.9;
+    }
+    .imgDisplay {
+        width: 120px;
+        height: 120px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        border-radius: 5px;
+    }
+    .buttonDisabled {
+        font-family: 'Coiny';
+        font-size: 18px;
+        background-color: var(--grey);
+        border: none;
+        border-radius: 10px;
+        padding: 0 8px;
+        cursor:not-allowed;
+        color: var(--light-dark-grey);
     }
 </style>
