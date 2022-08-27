@@ -398,9 +398,9 @@ const addPicture = async(e:any) => {
         pic.value.push(URL.createObjectURL(e.target.files[i]));
     }
     display_gif.value = false;
-    registerGifs.value = undefined;
+    // registerGifs.value = undefined;
     gifToSend.value = undefined;
-    gifSelected.value = undefined;
+    // gifSelected.value = undefined;
 }
 
 const error_number_file = () => {
@@ -491,6 +491,9 @@ const cancelPicture = async(index:number) => {
     	width:120px;
     	height:120px;
         border-radius:5px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
     }
 
     .button {
@@ -507,7 +510,6 @@ const cancelPicture = async(index:number) => {
         color: var(--teal);
         opacity: 0.6;
     }
-
     .search_gif {
         font-family: 'BeVietnamPro-SemiBold';
         font-size: 16px;
@@ -518,7 +520,6 @@ const cancelPicture = async(index:number) => {
         margin: 10px 0 0 0;
         padding: 4px 0;
     }
-
     .search_gif_edit {
         font-family: 'BeVietnamPro-SemiBold';
         font-size: 16px;
@@ -529,18 +530,15 @@ const cancelPicture = async(index:number) => {
         margin: 10px 0 0 0;
         padding: 4px 0;
     }
-
     .multiple_button_tweet {
         display:flex;
         justify-content: center;
         align-items: center;
         margin-top: 10px;
     }
-
     .schedule {
         margin-top: 10px;
     }
-
     .select-twitter-account {
         font-family: 'BeVietnamPro-SemiBold';
         font-size: 16px;
@@ -558,20 +556,17 @@ const cancelPicture = async(index:number) => {
         background-size: cover;
 		border-radius: 25px;
 	}
-
     .img-name-tweet {
         display: flex;
         justify-content: center;
         align-items: center;
     }
-
     .every_tweet {
         background-color: #dbdbdb;
         border-radius: 10px;
         padding: 5px;
         margin-bottom: 10px;
     }
-
     .icon_picture {
         font-size: 18px;
         color: var(--blue);
@@ -581,7 +576,6 @@ const cancelPicture = async(index:number) => {
         padding: 6px;
         cursor: pointer;
     }
-
     .icon_picture_disabled {
         font-size: 18px;
         color: var(--light-dark-grey);
@@ -591,7 +585,6 @@ const cancelPicture = async(index:number) => {
         padding: 6px;
         cursor:not-allowed;
     }
-
     .icon_picture:hover {
         color: var(--teal);
         opacity: 0.6;
@@ -607,7 +600,6 @@ const cancelPicture = async(index:number) => {
     .imgDownloadSub {
         margin: 0 5px;
     }
-    
     .xmark {
         position: relative;
         left: 47px;

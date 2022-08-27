@@ -365,8 +365,6 @@ const editTweet = async(index:number) => {
 	        console.log('error : ' + err);
 	    })
 }
-
-
 </script>
 
 <style scoped>
