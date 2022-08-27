@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <p>{{errorNumberOfFile}}</p>
+            <p>{{errorFile}}</p>
             <p>{{message_tweet}}</p>
         </div>
 
@@ -128,7 +128,7 @@ const pic = ref(['']);
 pic.value.shift();
 const allPicture = ref(['']);
 allPicture.value.shift();
-const errorNumberOfFile = ref('');
+const errorFile = ref('');
 
 watch(gifSelected, async() => {
   await SearchGifApi();
@@ -385,26 +385,32 @@ const addPicture = async(e:any) => {
     const tmpPicture = e.target.files;
     if (tmpPicture.length + allPicture.value.length > 4) {
         console.log('You need to put 4 images maximum');
-        errorNumberOfFile.value = "You need to put 4 images maximum";
-        error_number_file();
+        errorFile.value = "You need to put 4 images maximum";
+        error_file();
         return;
     }
-    console.log(tmpPicture.length + allPicture.value.length);
-    
-    for (let i = 0; tmpPicture[i]; i++){
+    for (let i = 0; tmpPicture[i]; i++) {
         allPicture.value.push(tmpPicture[i]);
     }
-    for (let i = 0; e.target.files[i]; i++){
+    for (let i = 0; e.target.files[i]; i++) {
         pic.value.push(URL.createObjectURL(e.target.files[i]));
     }
+    for (let i = 0; allPicture.value[i]; i++) {
+        console.log(allPicture.value[i].type);
+        if (allPicture.value[i].type == 'image/gif' && allPicture.value.length >= 2) {
+            pic.value.splice(0, pic.value.length);
+            allPicture.value.splice(0, allPicture.value.length);
+            errorFile.value = "Please choose either 1 GIF or up to 4 photos.";
+            error_file();
+        }
+    }
     display_gif.value = false;
-    // registerGifs.value = undefined;
     gifToSend.value = undefined;
-    // gifSelected.value = undefined;
+    e.target.value = '';
 }
 
-const error_number_file = () => {
-    setTimeout(() => errorNumberOfFile.value = "", 2500);
+const error_file = () => {
+    setTimeout(() => errorFile.value = "", 2500);
 }
 
 const cancelPicture = async(index:number) => {
