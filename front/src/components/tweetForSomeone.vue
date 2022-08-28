@@ -383,8 +383,8 @@ const tweet_for_someone = async() => {
 
 const addPicture = async(e:any) => {
     const tmpPicture = e.target.files;
+    console.log(e.target.files);
     if (tmpPicture.length + allPicture.value.length > 4) {
-        console.log('You need to put 4 images maximum');
         errorFile.value = "You need to put 4 images maximum";
         error_file();
         return;
@@ -396,7 +396,6 @@ const addPicture = async(e:any) => {
         pic.value.push(URL.createObjectURL(e.target.files[i]));
     }
     for (let i = 0; allPicture.value[i]; i++) {
-        console.log(allPicture.value[i].type);
         if (allPicture.value[i].type == 'image/gif' && allPicture.value.length >= 2) {
             pic.value.splice(0, pic.value.length);
             allPicture.value.splice(0, allPicture.value.length);

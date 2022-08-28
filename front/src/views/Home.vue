@@ -1,6 +1,6 @@
 <template>
 	<p class="title">WELCOME TO TWEET SENDED</p>
-	<test></test>
+	<!-- <test></test> -->
 </template>
 
 <script setup lang="ts">
