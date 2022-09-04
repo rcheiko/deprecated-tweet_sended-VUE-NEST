@@ -17,7 +17,7 @@
                     <p class="button" @click="display_schedule = !display_schedule" style="margin-right: 5px; margin-left: 5px;"><i class="fa-solid fa-calendar-days"></i></p>
                     <label for="file" v-if="gifToSend == undefined"><i class="fa-solid fa-images icon_picture" style="margin-right: 5px; margin-left: 5px;"></i></label>
                     <label v-if="gifToSend"><i class="fa-solid fa-images icon_picture_disabled" style="margin-right: 5px; margin-left: 5px;"></i></label>
-                    <input style="display:none;" type="file" id="file" @change="addPicture" multiple/>
+                    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg, image/gif" multiple/>
                     <button class="button" type="submit" style="margin-left: 5px;">Tweet</button>
                 </div>
                 <div v-if="display_gif === true && gifToSend === undefined">
@@ -383,13 +383,13 @@ const tweet_for_someone = async() => {
 
 const addPicture = async(e:any) => {
     const tmpPicture = e.target.files;
-    console.log(e.target.files);
     if (tmpPicture.length + allPicture.value.length > 4) {
         errorFile.value = "You need to put 4 images maximum";
         error_file();
         return;
     }
     for (let i = 0; tmpPicture[i]; i++) {
+        console.log(e.target.files[i]);
         allPicture.value.push(tmpPicture[i]);
     }
     for (let i = 0; e.target.files[i]; i++) {
