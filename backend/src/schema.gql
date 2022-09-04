@@ -1,0 +1,57 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Permission {
+  id: Int!
+  user_id: String!
+  userId: Int!
+  user: User
+  User: User!
+}
+
+type Tweet {
+  id: Int!
+  scheduleTweet: DateTime!
+  tweet: String!
+  user_id: String
+  gifLink: String
+  user: User!
+  createdDate: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  id: Int!
+  user_id: String!
+  accessToken: String!
+  accessSecret: String!
+  permission: [Permission!]
+}
+
+type Query {
+  findOneUser(id: Int!): User!
+  findOneUserId(user_id: String!): User!
+  FindAllUsers: [User!]!
+  findAllPermissions: [Permission!]!
+  findOnePermission(id: Int!): Permission!
+  findOnePermissionId(user_id: String!): Permission!
+  findMultiplesPermissions(user_id: String!): [Permission!]!
+  findOnePermissionUser(user_id: String!, userId: Float!): Permission!
+  findAllTweet: [Tweet!]!
+  findTweetUserMatch(user_id_owner: String!): [Tweet!]!
+  findOneTweet(user_id: String!): Tweet!
+}
+
+type Mutation {
+  createPermission(user_id_owner: String!, nameUser: String!): User!
+  removePermission(user_id_owner: String!, user_id: String!): User!
+  createTweet(tweet: String!, scheduleTweet: DateTime!, user_id: String!, user_id_owner: String): Tweet!
+  createTweetGif(tweet: String!, scheduleTweet: DateTime!, user_id: String!, gifLink: String!, user_id_owner: String): Tweet!
+  updateTweet(id: Int!, scheduleTweet: DateTime!, tweet: String!, gifLink: String): Tweet!
+  removeTweet(id: Int!): [Tweet!]!
+}
