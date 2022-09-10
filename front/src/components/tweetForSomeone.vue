@@ -17,7 +17,9 @@
                     <p class="button" @click="display_schedule = !display_schedule" style="margin-right: 5px; margin-left: 5px;"><i class="fa-solid fa-calendar-days"></i></p>
                     <label for="file" v-if="gifToSend == undefined"><i class="fa-solid fa-images icon_picture" style="margin-right: 5px; margin-left: 5px;"></i></label>
                     <label v-if="gifToSend"><i class="fa-solid fa-images icon_picture_disabled" style="margin-right: 5px; margin-left: 5px;"></i></label>
-                    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg, image/gif" multiple/>
+                    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg, image/gif" multiple v-if="pic.length != 3"/>
+                    <!-- <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg" multiple/> -->
+                    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg"  v-if="pic.length === 3"/>
                     <button class="button" type="submit" style="margin-left: 5px;">Tweet</button>
                 </div>
                 <div v-if="display_gif === true && gifToSend === undefined">
@@ -108,6 +110,10 @@ import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
 
 // let user = await JSON.parse(localStorage.getItem('user') || '');
+
+
+const test = ref('0');
+
 
 const _tweet = ref('')
 const tweetos_selected = ref('')
@@ -392,20 +398,76 @@ const addPicture = async(e:any) => {
         console.log(e.target.files[i]);
         allPicture.value.push(tmpPicture[i]);
     }
-    for (let i = 0; e.target.files[i]; i++) {
-        pic.value.push(URL.createObjectURL(e.target.files[i]));
-    }
-    for (let i = 0; allPicture.value[i]; i++) {
-        if (allPicture.value[i].type == 'image/gif' && allPicture.value.length >= 2) {
+    for (let i = 0; allPicture.value[i]; i++) { // CHECK ERROR FILE UPLOAD
+        if (isImage(allPicture.value[i].type) === 1 && allPicture.value[i].size >= 20000000){
+            pic.value.splice(0, pic.value.length);
+            allPicture.value.splice(0, allPicture.value.length);
+            errorFile.value = "The image size is too large, please put picture on 20MB maximum.";
+            error_file();
+            return ;
+        }
+        if (allPicture.value[i].type === 'image/gif' && allPicture.value.length >= 2) {
             pic.value.splice(0, pic.value.length);
             allPicture.value.splice(0, allPicture.value.length);
             errorFile.value = "Please choose either 1 GIF or up to 4 photos.";
             error_file();
+            return ;
+        }
+        if (allPicture.value[i].type === 'image/gif' && allPicture.value[i].size >= 15000000) {
+            pic.value.splice(0, pic.value.length);
+            allPicture.value.splice(0, allPicture.value.length);
+            errorFile.value = "The gif size is too large, please put gif on 15MB maximum";
+            error_file();
+            return ;
         }
     }
+    for (let i = 0; e.target.files[i]; i++) {
+        if (isImage(e.target.files[i].type) === 1) {
+            let img = new Image();
+            img.src = URL.createObjectURL(e.target.files[i]);
+            await img.decode()
+            console.log(img.width, " - ", img.height);
+            if (img.width > 8192 || img.height > 8192) {
+                pic.value.splice(0, pic.value.length);
+                allPicture.value.splice(0, allPicture.value.length);
+                errorFile.value = "The maximum resolution for image is 8192x8192";
+                error_file();
+                return ;
+            }
+        }
+        if (e.target.files[i].type === 'image/gif') {
+            let gif = new Image();
+            gif.src = URL.createObjectURL(e.target.files[i]);
+            await gif.decode()
+            console.log(gif.width, " - ", gif.height);
+            if (gif.width > 2048 || gif.height > 2048) {
+                pic.value.splice(0, pic.value.length);
+                allPicture.value.splice(0, allPicture.value.length);
+                errorFile.value = "The maximum resolution for gif is 2048x2048";
+                error_file();
+                return ;
+            }
+        }
+        pic.value.push(URL.createObjectURL(e.target.files[i]));
+    }
+    console.log(allPicture.value);
     display_gif.value = false;
     gifToSend.value = undefined;
     e.target.value = '';
+}
+
+const isImage = (res:any) => {
+    let check:number = 0;
+    const formatImage = ['image/jpeg', 'image/jpg', 'image/png'];
+    for (let i = 0; formatImage[i]; i++){
+        if (res === formatImage[i]){
+            check++;
+        }
+    }
+    if (check === 0){
+        return (0);
+    }
+    return (1);
 }
 
 const error_file = () => {
@@ -413,10 +475,8 @@ const error_file = () => {
 }
 
 const cancelPicture = async(index:number) => {
-    console.log('INDEX :', index);
     pic.value.splice(index, 1);
     allPicture.value.splice(index, 1);
-    console.log(allPicture.value);
 }
 
 </script>

@@ -32,7 +32,7 @@ import { createPermission, removePermission } from '@/constants/graphql'
 import axios from 'axios'
 import authHeader from '@/services/auth-header'
 
-const nameUser = ref('')
+const nameUser = ref('');
 const perm = ref();
 let user = JSON.parse(localStorage.getItem('user') || '');
 
@@ -40,11 +40,11 @@ const { mutate: _createPermission, onDone: _createPermissionDone } = useMutation
 const { mutate: _removePermission, onDone: _removePermissionDone } = useMutation(removePermission);
 
 _removePermissionDone(() => {
-	console.log('DONE removePermissionDone')
+	console.log('DONE removePermissionDone');
 })
 
 _createPermissionDone(() => {
-	console.log('DONE createPermissionDone')
+	console.log('DONE createPermissionDone');
 })
 
 
