@@ -46,7 +46,7 @@
                     <div v-if="isImage(p.type) === 1 || p.type === 'image/gif'" :style="{'background-image':'url(' + p.src + ')'}" class="imgDisplay">
                         <i class="fa-solid fa-circle-xmark fa-swap-opacity xmark" @click="cancelPicture(index)"></i>
                     </div>
-                    <video class="imgDisplay" v-if="p.type === 'video/mp4'" :src="p.src">
+                    <video class="imgDisplay" v-if="p.type === 'video/mp4'" :src="p.src"> <!-- A FINIR LA VIDEO NE FONCTIONNE PAS CORRECTEMENT REFAIRE L'INTERFACE -->
                         <i class="fa-solid fa-circle-xmark fa-swap-opacity xmark" @click="cancelPicture(index)"></i>
                     </video>
                 </div>
