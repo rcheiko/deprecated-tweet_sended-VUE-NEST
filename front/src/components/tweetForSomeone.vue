@@ -11,14 +11,15 @@
                 </select>
                 <textarea v-model="_tweet" id="_subject" name="_subject" placeholder="Tweet something.." required></textarea>
 
-                <div class="multiple_button_tweet">
+                <div class="multiple_button_tweet"> <!-- MULTIPLE CHOICE FOR TWEET -->
                     <p class="button" @click="display_gif = !display_gif" style="margin-right: 5px;" v-if="pic.length == 0">GIF</p>
                     <p class="buttonDisabled" style="margin-right: 5px;" v-if="pic.length >= 1">GIF</p>
                     <p class="button" @click="display_schedule = !display_schedule" style="margin-right: 5px; margin-left: 5px;"><i class="fa-solid fa-calendar-days"></i></p>
-                    <label for="file" v-if="gifToSend == undefined"><i class="fa-solid fa-images icon_picture" style="margin-right: 5px; margin-left: 5px;"></i></label>
-                    <label v-if="gifToSend"><i class="fa-solid fa-images icon_picture_disabled" style="margin-right: 5px; margin-left: 5px;"></i></label>
-                    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg, image/gif" multiple v-if="pic.length != 3"/>
+                    <label for="file" v-if="gifToSend == undefined && pic[0]?.type != 'image/gif' && pic[0]?.type != 'video/mp4' && pic.length < 4"><i class="fa-solid fa-images icon_picture" style="margin-right: 5px; margin-left: 5px;"></i></label>
+                    <label v-else><i class="fa-solid fa-images icon_picture_disabled" style="margin-right: 5px; margin-left: 5px;"></i></label>
+                    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg, image/gif, video/mp4" v-if="pic.length === 0" multiple/>
                     <!-- <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg" multiple/> -->
+                    <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg"  v-if="pic.length >= 1 && pic.length <= 2" multiple/>
                     <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg"  v-if="pic.length === 3"/>
                     <button class="button" type="submit" style="margin-left: 5px;">Tweet</button>
                 </div>
@@ -40,11 +41,14 @@
                 <DatePicker class="schedule" v-if="display_schedule === true" v-model="date" mode="datetime"/>
             </div>
             <button v-if="display_schedule === true" class="button" @click="cancel_schedule()" style="margin-top: 10px;">Cancel schedule</button>
-            <div class="imgDownload">
+            <div class="imgDownload"> <!-- DISPLAY IMAGE DOWNLOADED -->
                 <div class="imgDownloadSub" v-for="(p, index) in pic">
-                    <div :style="{'background-image':'url(' + p + ')'}" class="imgDisplay">
+                    <div v-if="isImage(p.type) === 1 || p.type === 'image/gif'" :style="{'background-image':'url(' + p.src + ')'}" class="imgDisplay">
                         <i class="fa-solid fa-circle-xmark fa-swap-opacity xmark" @click="cancelPicture(index)"></i>
                     </div>
+                    <video class="imgDisplay" v-if="p.type === 'video/mp4'" :src="p.src">
+                        <i class="fa-solid fa-circle-xmark fa-swap-opacity xmark" @click="cancelPicture(index)"></i>
+                    </video>
                 </div>
             </div>
             <p>{{errorFile}}</p>
@@ -130,7 +134,7 @@ const registerGifs = ref();
 
 const gifSelected = useDebouncedRef('', 1000, false);
 
-const pic = ref(['']);
+const pic = ref([{}]);
 pic.value.shift();
 const allPicture = ref(['']);
 allPicture.value.shift();
@@ -181,7 +185,6 @@ onBeforeMount(async () => {
 	    .catch((err: Error) => {
 	        console.log('error : ' + err);
 	    })
-
 	await axios.get(import.meta.env.VITE_BACKEND_URL + '/users/giveUsersTweet/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             perm.value = await response.data;
@@ -413,6 +416,13 @@ const addPicture = async(e:any) => {
             error_file();
             return ;
         }
+        if (allPicture.value[i].type === 'video/mp4' && allPicture.value.length >= 2) {
+            pic.value.splice(0, pic.value.length);
+            allPicture.value.splice(0, allPicture.value.length);
+            errorFile.value = "Please choose either 1 Video or up to 4 photos.";
+            error_file();
+            return ;
+        }
         if (allPicture.value[i].type === 'image/gif' && allPicture.value[i].size >= 15000000) {
             pic.value.splice(0, pic.value.length);
             allPicture.value.splice(0, allPicture.value.length);
@@ -448,9 +458,11 @@ const addPicture = async(e:any) => {
                 return ;
             }
         }
-        pic.value.push(URL.createObjectURL(e.target.files[i]));
+        let picUrlInfo = { src: URL.createObjectURL(e.target.files[i]), type: e.target.files[i].type };
+        pic.value.push(picUrlInfo);
+        console.log(pic.value[0].type);
     }
-    console.log(allPicture.value);
+    console.log("ALL PICTURE :", allPicture.value);
     display_gif.value = false;
     gifToSend.value = undefined;
     e.target.value = '';
@@ -459,12 +471,12 @@ const addPicture = async(e:any) => {
 const isImage = (res:any) => {
     let check:number = 0;
     const formatImage = ['image/jpeg', 'image/jpg', 'image/png'];
-    for (let i = 0; formatImage[i]; i++){
+    for (let i = 0; formatImage[i]; i++) {
         if (res === formatImage[i]){
             check++;
         }
     }
-    if (check === 0){
+    if (check === 0) {
         return (0);
     }
     return (1);
