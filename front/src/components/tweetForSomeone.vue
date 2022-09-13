@@ -18,7 +18,6 @@
                     <label for="file" v-if="gifToSend == undefined && pic[0]?.type != 'image/gif' && pic[0]?.type != 'video/mp4' && pic.length < 4"><i class="fa-solid fa-images icon_picture" style="margin-right: 5px; margin-left: 5px;"></i></label>
                     <label v-else><i class="fa-solid fa-images icon_picture_disabled" style="margin-right: 5px; margin-left: 5px;"></i></label>
                     <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg, image/gif, video/mp4" v-if="pic.length === 0" multiple/>
-                    <!-- <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg" multiple/> -->
                     <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg"  v-if="pic.length >= 1 && pic.length <= 2" multiple/>
                     <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg"  v-if="pic.length === 3"/>
                     <button class="button" type="submit" style="margin-left: 5px;">Tweet</button>
@@ -46,9 +45,11 @@
                     <div v-if="isImage(p.type) === 1 || p.type === 'image/gif'" :style="{'background-image':'url(' + p.src + ')'}" class="imgDisplay">
                         <i class="fa-solid fa-circle-xmark fa-swap-opacity xmark" @click="cancelPicture(index)"></i>
                     </div>
-                    <video class="imgDisplay" v-if="p.type === 'video/mp4'" :src="p.src"> <!-- A FINIR LA VIDEO NE FONCTIONNE PAS CORRECTEMENT REFAIRE L'INTERFACE -->
-                        <i class="fa-solid fa-circle-xmark fa-swap-opacity xmark" @click="cancelPicture(index)"></i>
-                    </video>
+                    <div class="video-upload">
+                        <video v-if="p.type === 'video/mp4'" :src="p.src" controls preload="metadata" width="250" loop> <!-- A FINIR LA VIDEO NE FONCTIONNE PAS CORRECTEMENT REFAIRE L'INTERFACE -->
+                        </video>
+                        <i v-if="p.type === 'video/mp4'" class="fa-solid fa-circle-xmark fa-swap-opacity xmark-video" @click="cancelPicture(index)"></i>
+                    </div>
                 </div>
             </div>
             <p>{{errorFile}}</p>
@@ -460,9 +461,9 @@ const addPicture = async(e:any) => {
         }
         let picUrlInfo = { src: URL.createObjectURL(e.target.files[i]), type: e.target.files[i].type };
         pic.value.push(picUrlInfo);
-        console.log(pic.value[0].type);
+        // console.log(pic.value[0].type);
+        console.log("VIDEO INFO : ", pic.value[0]);
     }
-    console.log("ALL PICTURE :", allPicture.value);
     display_gif.value = false;
     gifToSend.value = undefined;
     e.target.value = '';
@@ -679,12 +680,23 @@ const cancelPicture = async(index:number) => {
     }
     .xmark {
         position: relative;
-        left: 47px;
+        left: -46px;
+        top:3px;
         color:white;
         cursor: pointer;
-        margin-top: 3px;
     }
-    .xmark:hover {
+
+    .xmark-video {
+        position: absolute;
+        color:white;
+        cursor:pointer;
+        left: 5px;
+        top: 5px;
+    }
+    .video-upload {
+        position:relative;
+    }
+    .xmark:hover, .xmark-video:hover {
         opacity: 0.9;
     }
     .imgDisplay {
