@@ -119,7 +119,8 @@ import 'v-calendar/dist/style.css'
 
 const test = ref('0');
 
-
+// let res:any;
+const res:any = ref();
 const _tweet = ref('')
 const tweetos_selected = ref('')
 const message_tweet = ref('')
@@ -427,7 +428,14 @@ const addPicture = async(e:any) => {
         if (allPicture.value[i].type === 'image/gif' && allPicture.value[i].size >= 15000000) {
             pic.value.splice(0, pic.value.length);
             allPicture.value.splice(0, allPicture.value.length);
-            errorFile.value = "The gif size is too large, please put gif on 15MB maximum";
+            errorFile.value = "The gif size is too large, please put gif on 15MB maximum.";
+            error_file();
+            return ;
+        }
+        if (allPicture.value[i].type === 'video/mp4' && allPicture.value[i].size >= 300000000) {
+            pic.value.splice(0, pic.value.length);
+            allPicture.value.splice(0, allPicture.value.length);
+            errorFile.value = "The video size is too large, please put video on 300MB maximum.";
             error_file();
             return ;
         }
@@ -441,7 +449,7 @@ const addPicture = async(e:any) => {
             if (img.width > 8192 || img.height > 8192) {
                 pic.value.splice(0, pic.value.length);
                 allPicture.value.splice(0, allPicture.value.length);
-                errorFile.value = "The maximum resolution for image is 8192x8192";
+                errorFile.value = "The maximum resolution for image is 8192x8192.";
                 error_file();
                 return ;
             }
@@ -454,19 +462,48 @@ const addPicture = async(e:any) => {
             if (gif.width > 2048 || gif.height > 2048) {
                 pic.value.splice(0, pic.value.length);
                 allPicture.value.splice(0, allPicture.value.length);
-                errorFile.value = "The maximum resolution for gif is 2048x2048";
+                errorFile.value = "The maximum resolution for gif is 2048x2048.";
                 error_file();
                 return ;
             }
         }
+
+        if (e.target.files[i].type === 'video/mp4') {
+            let video = document.createElement('video');
+
+            video.src = URL.createObjectURL(e.target.files[i]);
+
+            if ((video.width > 1900 || video.height > 1900) || (video.width > 1200 && video.height > 1200))  { // A TEST RESO 1900 x 1200 max -> 1200 x 1900 max
+                pic.value.splice(0, pic.value.length);
+                allPicture.value.splice(0, allPicture.value.length);
+                errorFile.value = "The maximum resolution for video is 1900x1200 or 1200x1900.";
+                error_file();
+                return ;
+            }
+            takeDurationVideo(video);
+        }
+
         let picUrlInfo = { src: URL.createObjectURL(e.target.files[i]), type: e.target.files[i].type };
         pic.value.push(picUrlInfo);
-        // console.log(pic.value[0].type);
-        console.log("VIDEO INFO : ", pic.value[0]);
     }
     display_gif.value = false;
     gifToSend.value = undefined;
     e.target.value = '';
+}
+
+const takeDurationVideo = async(video:any) => {
+    video.onloadedmetadata = function() {
+        console.log(video.videoWidth, " - ", video.videoHeight);
+        console.log("DURATION :", video.duration);
+        res.value = video.duration;
+        if (video.duration > 220) {
+            pic.value.splice(0, pic.value.length);
+            allPicture.value.splice(0, allPicture.value.length);
+            errorFile.value = "The video can have a duration of 220 seconds.";
+            error_file();
+        }
+
+    }
 }
 
 const isImage = (res:any) => {
