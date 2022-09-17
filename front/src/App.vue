@@ -12,9 +12,16 @@
 import Navbar from './components/Navbar.vue'
 import { provideApolloClient } from '@vue/apollo-composable'
 import { apolloClient } from './main'
+import { onBeforeMount, ref } from 'vue'
 // const { result, loading, error } = useQuery(all_users_query);
+import { userInformationStore } from '@/stores/user_information'
 
 provideApolloClient(apolloClient)
+const user = userInformationStore();
+
+onBeforeMount(async () => {
+  user.getInfoUser();
+})
 
 // const variables = ref({
 //   id: 1,

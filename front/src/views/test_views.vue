@@ -6,7 +6,8 @@
 {{salut}}
 
 <p>test : {{ user.username }}</p>
-<p>test 2 : {{ user.test }}</p>
+<p>test 2 : {{ user.tag }}</p>
+<button @click="user.getInfoUser">infos</button>
 </template>
 
 <script setup lang="ts">
