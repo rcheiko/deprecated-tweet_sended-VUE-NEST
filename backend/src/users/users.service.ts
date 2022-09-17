@@ -167,12 +167,14 @@ export class UsersService {
   }
 
   async tweetPermission(tweet: string, user_id_owner: string, user_id: string, gif?: string) {
+    console.log('111');
     const userId: any = await this.findOneId(user_id);
-    const permission: any = await this.permissionsService.findOneUser(user_id_owner, userId.id)
+    await this.permissionsService.findOneUser(user_id_owner, userId.id)
         .catch((err) => {
           console.log("error :", err);
           return ;
         })
+    
     const user: any = await this.findOneId(user_id);
     const userClient = new TwitterApi({
       appKey: this.configService.get('API_KEY'),
@@ -180,7 +182,7 @@ export class UsersService {
       accessToken: user.accessToken,
       accessSecret: user.accessSecret,
     });
-
+    console.log('222');
     if (gif === undefined){
       await userClient.v2.tweet(tweet);
     }

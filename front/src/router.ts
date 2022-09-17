@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import Profile from './views/Profile.vue'
 import Tweet from './views/Tweet.vue'
 import Permission from './views/Permission.vue'
+import test_views from './views/test_views.vue'
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -25,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
       path: '/permission',
       name: 'Permission',
       component: Permission
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test_views
     },
     {
       path: '/:pathMatch(.*)*',

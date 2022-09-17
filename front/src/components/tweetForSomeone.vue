@@ -114,13 +114,6 @@ import axios from 'axios'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
 
-// let user = await JSON.parse(localStorage.getItem('user') || '');
-
-
-const test = ref('0');
-
-// let res:any;
-const res:any = ref();
 const _tweet = ref('')
 const tweetos_selected = ref('')
 const message_tweet = ref('')
@@ -139,6 +132,7 @@ const gifSelected = useDebouncedRef('', 1000, false);
 const pic = ref([{}]);
 pic.value.shift();
 const allPicture = ref(['']);
+// const allPicture:Ref<[''] | undefined> = ref();
 allPicture.value.shift();
 const errorFile = ref('');
 
@@ -162,7 +156,6 @@ const display_edit = ref(false);
 const edit_tweet = ref('');
 const edit_date = ref();
 const id_edit = ref();
-
 
 const { mutate: _createTweet, onDone: _createTweetDone } = useMutation(createTweet);
 const { mutate: _createTweetGif} = useMutation(createTweet_gif);
@@ -207,7 +200,6 @@ const remove_shedule_tweet = async (index:number) => {
         .catch((err) => {
             console.log("error :", err);
         })
-
 	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             scheduleInfo.value = await response.data;
@@ -343,7 +335,6 @@ const tweet_for_someone = async() => {
                     console.log('error : ' + e);
                 })
         }
-
     }
     else {
         if (gifToSend.value === undefined) {
@@ -495,14 +486,12 @@ const takeDurationVideo = async(video:any) => {
     video.onloadedmetadata = function() {
         console.log(video.videoWidth, " - ", video.videoHeight);
         console.log("DURATION :", video.duration);
-        res.value = video.duration;
         if (video.duration > 220) {
             pic.value.splice(0, pic.value.length);
             allPicture.value.splice(0, allPicture.value.length);
             errorFile.value = "The video can have a duration of 220 seconds.";
             error_file();
         }
-
     }
 }
 
