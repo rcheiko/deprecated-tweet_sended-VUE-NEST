@@ -10,9 +10,9 @@
                 </select>
                 <textarea v-model="_tweet" id="_subject" name="_subject" placeholder="Tweet something.." required></textarea>
                 <div class="multiple_button_tweet"> <!-- MULTIPLE CHOICE FOR TWEET -->
-                    <chooseGif v-model:display_gif="display_gif"  :fillGifToSend=fillGifToSend></chooseGif>
+                    <chooseGif v-model:display_gif="display_gif"  v-model:gifToSend="gifToSend"></chooseGif>
                     <schedule v-model:date="dateScheduledTweet"></schedule>
-                    <pictureDownload v-model:display_gif="display_gif"></pictureDownload>
+                    <pictureDownload v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload>
                     <button class="button" type="submit">Tweet</button>
                 </div>
             </form>
@@ -41,6 +41,10 @@ const gifToSend = ref(); // The gif that the user selected and want to send
 const scheduleInfo = ref(); // All the schedule tweet will be stocked here
 const dateScheduledTweet = ref (''); // Date that the user put to schedule his tweet
 
+const test = () => {
+    console.log('GIF TO SEND : ', gifToSend.value);
+    console.log('display gif : ', display_gif.value);
+}
 
 onBeforeMount(async () => {
     let user = await JSON.parse(localStorage.getItem('user') || '');
@@ -59,14 +63,6 @@ onBeforeMount(async () => {
 	        console.log('error : ' + err);
 	    })
 })
-
-const fillGifToSend = async(res:any) => {
-    gifToSend.value = res;
-}
-
-const test = () => {
-    console.log(display_gif.value);
-}
 
 </script>
 

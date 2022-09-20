@@ -1,6 +1,6 @@
 <template>
-    <label for="file" v-if="gifToSend == undefined && pic[0]?.type != 'image/gif' && pic[0]?.type != 'video/mp4' && pic.length < 4"><i class="fa-solid fa-images icon_picture" style="margin-right: 5px; margin-left: 5px;"></i></label>
-    <label v-else><i class="fa-solid fa-images icon_picture_disabled" style="margin-right: 5px; margin-left: 5px;"></i></label>
+    <label for="file" v-if="gifToSend === undefined && pic[0]?.type != 'image/gif' && pic[0]?.type != 'video/mp4' && pic.length < 4"><i class="fa-solid fa-images icon_picture"></i></label>
+    <label v-else><i class="fa-solid fa-images icon_picture_disabled"></i></label>
     <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg, image/gif, video/mp4" v-if="pic.length === 0" multiple/>
     <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg"  v-if="pic.length >= 1 && pic.length <= 2" multiple/>
     <input style="display:none;" type="file" id="file" @change="addPicture" accept="image/png, image/jpeg, image/jpg"  v-if="pic.length === 3"/>
@@ -11,7 +11,7 @@ import { onBeforeMount, ref } from 'vue'
 import axios from 'axios'
 
 const props = defineProps(['gifToSend', 'display_gif']);
-const emit = defineEmits(['update:display_gif']);
+const emit = defineEmits([ 'update:gifToSend', 'update:display_gif']);
 
 const pic = ref([{}]);  // All picture selected to display with url created
 pic.value.shift();
@@ -132,7 +132,7 @@ const addPicture = async(e:any) => {
         pic.value.push(picUrlInfo);
     }
     emit('update:display_gif', false);
-    // gifToSend.value = undefined;
+    emit('update:gifToSend', undefined);
     e.target.value = '';
 }
 
@@ -158,5 +158,26 @@ const cancelPicture = async(index:number) => {
 </script>
 
 <style scoped>
-
+.icon_picture {
+        font-size: 18px;
+        color: var(--blue);
+        background-color: var(--grey);
+        border: none;
+        border-radius: 10px;
+        padding: 6px;
+        cursor: pointer;
+    }
+    .icon_picture_disabled {
+        font-size: 18px;
+        color: var(--light-dark-grey);
+        background-color: var(--grey);
+        border: none;
+        border-radius: 10px;
+        padding: 6px;
+        cursor:not-allowed;
+    }
+    .icon_picture:hover {
+        color: var(--teal);
+        opacity: 0.6;
+    }
 </style>

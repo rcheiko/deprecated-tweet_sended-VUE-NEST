@@ -1,8 +1,6 @@
 <template>
     <p class="button" @click="emit('update:display_gif', !props.display_gif)">GIF</p> <!-- v-if="pic.length == 0" -->
     <!-- <p class="buttonDisabled">GIF</p> v-if="pic.length >= 1" -->
-    <!-- <p class="button" @click="display_schedule = !display_schedule" style="margin-right: 5px; margin-left: 5px;"><i class="fa-solid fa-calendar-days"></i></p> -->
-
     <div v-if="display_gif === true && gifToSend === undefined">
         <input class="search_gif" v-model="gifSelected" type="text" placeholder="Search some gifs">
         <div v-if="registerGifs" class="gif">
@@ -13,7 +11,7 @@
     </div>
     <div v-if="gifToSend != undefined">
         <div class="gif-image img-selected" :style="{'background-image':'url(' + gifToSend + ')'}"></div>
-        <button class="button" @click="gifToSend = undefined, fillGifToSend(undefined)">Cancel the gif</button>
+        <button class="button" @click="gifToSend = undefined, emit('update:gifToSend', undefined)">Cancel the gif</button>
     </div>
 </template>
 
@@ -25,13 +23,13 @@ import axios from 'axios'
 const gifToSend = ref(); // The gif that the user selected and want to send
 const registerGifs = ref(); // List of Gifs
 
-const props = defineProps(['fillGifToSend', 'display_gif']);
+const props = defineProps(['display_gif', 'gifToSend']);
 
-const emit = defineEmits(['update:display_gif']);
+const emit = defineEmits(['update:display_gif', 'update:gifToSend']);
 
 const gifClick = (index: number) => {
     gifToSend.value = registerGifs.value[index].images.original.url;
-    props.fillGifToSend(gifToSend.value);
+    emit('update:gifToSend', gifToSend.value);
 }
 
 const gifSelected = useDebouncedRef('', 1000, false);
