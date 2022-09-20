@@ -5,6 +5,7 @@ import Profile from './views/Profile.vue'
 import Tweet from './views/Tweet.vue'
 import Permission from './views/Permission.vue'
 import test_views from './views/test_views.vue'
+import tweet_test from './views/tweet_test.vue'
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -31,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
       path: '/test',
       name: 'test',
       component: test_views
+    },
+    {
+      path: '/tweet_test',
+      name: 'tweet_test',
+      component: tweet_test
     },
     {
       path: '/:pathMatch(.*)*',

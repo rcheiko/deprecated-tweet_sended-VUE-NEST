@@ -132,7 +132,6 @@ const gifSelected = useDebouncedRef('', 1000, false);
 const pic = ref([{}]);
 pic.value.shift();
 const allPicture = ref(['']);
-// const allPicture:Ref<[''] | undefined> = ref();
 allPicture.value.shift();
 const errorFile = ref('');
 

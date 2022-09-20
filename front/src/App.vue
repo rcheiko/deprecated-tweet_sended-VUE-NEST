@@ -5,7 +5,7 @@
 <!-- <p v-if="loading">Loading...</p> -->
 <!-- <p v-if="error">{{error}}</p> -->
 <!-- <button @click="rep()">test</button> -->
-  <!-- <p v-for="u in user">{{u.user_id}}</p> -->
+<!-- <p v-for="u in user">{{u.user_id}}</p> -->
 </template>
 
 <script setup lang="ts">
