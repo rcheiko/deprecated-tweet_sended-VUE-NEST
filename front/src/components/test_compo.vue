@@ -1,19 +1,18 @@
 <template>
-    <!-- <slot name="yo">yop mec</slot> -->
-    <button @click="a(fct())">test</button>
+    <button @click="added()">ADD LIST</button>
 </template>
 
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue'
 
-const props = defineProps(['a']);
+const props = defineProps(['salut']);
+const emit = defineEmits(['update:salut']);
 
-onBeforeMount (async () => {
-    // props.salut = 'test';
-})
+const nb = ref(0);
 
-const fct = () => {
-    return "POUET";
+const added = () => {
+    props.salut.push(nb.value++)
+    emit('update:salut', props.salut);
 }
 
 </script>

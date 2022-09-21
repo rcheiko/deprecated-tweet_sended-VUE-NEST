@@ -12,12 +12,13 @@
                 <div class="multiple_button_tweet"> <!-- MULTIPLE CHOICE FOR TWEET -->
                     <chooseGif v-model:display_gif="display_gif"  v-model:gifToSend="gifToSend"></chooseGif>
                     <schedule v-model:date="dateScheduledTweet"></schedule>
-                    <pictureDownload v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload>
+                    <pictureDownload v-model:pic="pic" v-model:allPicture="allPicture" v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload>
                     <button class="button" type="submit">Tweet</button>
                 </div>
             </form>
         </div>
     </body>
+    <button @click="test">test</button>
 </template>
 
 <script setup lang="ts">
@@ -40,10 +41,14 @@ const display_gif = ref(false) // check is we show the menu to take a gif
 const gifToSend = ref(); // The gif that the user selected and want to send
 const scheduleInfo = ref(); // All the schedule tweet will be stocked here
 const dateScheduledTweet = ref (''); // Date that the user put to schedule his tweet
+const pic = ref([{}]);  // All picture selected to display with url created
+pic.value.shift();
+const allPicture = ref(['']); // All picture selected by the user with all information (size ...)
+allPicture.value.shift();
 
 const test = () => {
-    console.log('GIF TO SEND : ', gifToSend.value);
-    console.log('display gif : ', display_gif.value);
+    console.log("ALL PICTURE :", allPicture.value);
+    console.log("pic value", pic.value);
 }
 
 onBeforeMount(async () => {

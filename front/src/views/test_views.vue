@@ -1,13 +1,14 @@
 <template>
-<Test_compo v-model="salut" :a="test">
+<Test_compo v-model:salut="salut">
     <!-- <template #yo>aurevoir mec</template> -->
 </Test_compo>
 <!-- <p>EVENT : {{event}}</p> -->
-{{salut}}
-
-<p>test : {{ user.username }}</p>
-<p>test 2 : {{ user.tag }}</p>
-<button @click="user.getInfoUser">infos</button>
+<div>{{salut}}</div>
+<button @click="test()">salutsalut</button>
+<!-- <p>test : {{ user.username }}</p> -->
+<!-- <p>test 2 : {{ user.tag }}</p> -->
+<!-- <button @click="user.getInfoUser">infos</button> -->
+<!-- <button @click="salut.push('1')">abcdef</button> -->
 </template>
 
 <script setup lang="ts">
@@ -19,12 +20,10 @@ import { userInformationStore } from '@/stores/user_information'
 
 const user = userInformationStore();
 
-const salut = ref('1salut1');
+const salut = ref([]);
 
-const test = (val:any) => {
-    salut.value = val;
+const test = () => {
+    console.log("RES :", salut.value);
 }
-
-// const event = ref('event');
 
 </script>
