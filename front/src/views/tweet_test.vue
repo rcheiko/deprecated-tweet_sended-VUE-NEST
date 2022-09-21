@@ -16,6 +16,7 @@
                     <button class="button" type="submit">Tweet</button>
                 </div>
             </form>
+            <pictureDisplay v-model:pic="pic" v-model:allPicture="allPicture"></pictureDisplay>
         </div>
     </body>
     <button @click="test">test</button>
@@ -28,7 +29,8 @@ import authHeader from '@/services/auth-header'
 import { userInformationStore } from '@/stores/user_information'
 import chooseGif from '../components/tweet/chooseGif.vue'
 import schedule from '../components/tweet/schedule.vue'
-import pictureDownload from '../components/tweet/pictureDownloadTweet.vue'
+import pictureDownload from '../components/tweet/picture/pictureDownloadTweet.vue'
+import pictureDisplay from '../components/tweet/picture/pictureDisplayTweet.vue'
 // import router from '../router'
 
 const user = userInformationStore();

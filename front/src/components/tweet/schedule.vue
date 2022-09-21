@@ -9,6 +9,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, computed } from 'vue'
 import { DatePicker } from 'v-calendar'
+import 'v-calendar/dist/style.css'
 import axios from 'axios'
 import router from '../../router'
 
