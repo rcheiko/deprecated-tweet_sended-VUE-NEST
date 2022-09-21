@@ -17,31 +17,30 @@
                 </div>
             </form>
             <pictureDisplay v-model:pic="pic" v-model:allPicture="allPicture"></pictureDisplay>
+            <displaySchedule></displaySchedule>
         </div>
     </body>
-    <button @click="test">test</button>
 </template>
 
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue'
+import { userInformationStore } from '@/stores/user_information'
 import axios from 'axios'
 import authHeader from '@/services/auth-header'
-import { userInformationStore } from '@/stores/user_information'
 import chooseGif from '../components/tweet/chooseGif.vue'
 import schedule from '../components/tweet/schedule.vue'
 import pictureDownload from '../components/tweet/picture/pictureDownloadTweet.vue'
 import pictureDisplay from '../components/tweet/picture/pictureDisplayTweet.vue'
-// import router from '../router'
+import displaySchedule from '../components/tweet/displayScheduleTweet.vue'
 
 const user = userInformationStore();
 
 const tweetos_selected = ref('') // v-model on tweetos selected by user in the form tweet
 const _tweet = ref('') // v-model on tweet form
 const userPermission = ref(); // user that gave permission to this user
-const scheduleTweet = ref(); // all the tweet that the user scheduled
+// const scheduleTweet = ref(); // all the tweet that the user scheduled
 const display_gif = ref(false) // check is we show the menu to take a gif
 const gifToSend = ref(); // The gif that the user selected and want to send
-const scheduleInfo = ref(); // All the schedule tweet will be stocked here
 const dateScheduledTweet = ref (''); // Date that the user put to schedule his tweet
 const pic = ref([{}]);  // All picture selected to display with url created
 pic.value.shift();
@@ -55,13 +54,6 @@ const test = () => {
 
 onBeforeMount(async () => {
     let user = await JSON.parse(localStorage.getItem('user') || '');
-	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
-	    .then(async(response) => {
-            scheduleTweet.value = await response.data;
-	    })
-	    .catch((err: Error) => {
-	        console.log('error : ' + err);
-	    })
 	await axios.get(import.meta.env.VITE_BACKEND_URL + '/users/giveUsersTweet/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             userPermission.value = await response.data;
