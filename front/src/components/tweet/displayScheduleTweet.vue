@@ -25,7 +25,6 @@ import { useMutation } from '@vue/apollo-composable'
 import authHeader from '@/services/auth-header'
 import axios from 'axios'
 
-// const scheduleTweet = ref(); // All the schedule tweet will be stocked here
 const { mutate: _removeTweet, onDone: _removeTweetDone } = useMutation(removeTweet);
 const props = defineProps(['scheduleTweetArr']);
 const emit = defineEmits(['update:scheduleTweetArr']);
@@ -35,7 +34,6 @@ onBeforeMount(async () => {
 	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
             await emit('update:scheduleTweetArr', response.data);
-            // scheduleTweet.value = await response.data;
 	    })
 	    .catch((err: Error) => {
 	        console.log('error : ' + err);
@@ -64,7 +62,6 @@ const remove_shedule_tweet = async (index:number) => {
         })
 	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
-            // scheduleTweet.value = await response.data;
             await emit('update:scheduleTweetArr', response.data);
 	    })
 	    .catch((err: Error) => {

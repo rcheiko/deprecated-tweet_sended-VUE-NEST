@@ -42,7 +42,6 @@ if (localStorage.hasOwnProperty('user') === true){
 const logout = () => {
 	localStorage.removeItem("user");
   login.value = false;
-  // window.location.reload();
 }
 
 onBeforeMount(async () => {

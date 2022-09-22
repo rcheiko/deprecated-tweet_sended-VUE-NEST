@@ -21,7 +21,6 @@
             <displaySchedule v-model:scheduleTweetArr="scheduleTweetArr" v-model:display_schedule="display_schedule"></displaySchedule>
         </div>
     </body>
-    <button @click="test()">test</button>
 </template>
 
 <script setup lang="ts">

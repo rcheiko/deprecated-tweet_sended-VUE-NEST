@@ -229,12 +229,11 @@ const editTweet = async(index:number) => {
         await _updateTweet({
             id:scheduleInfo.value[index].id,
             scheduleTweet: edit_date.value,
-            tweet: edit_tweet.value
+            tweet: edit_tweet.value 
+        }).catch((err) => {
+            console.log('error :', err);
+            return ;
         })
-            .catch((err) => {
-                console.log('error :', err);
-                return ;
-            })
         display_edit.value = false;
         edit_date.value = undefined;
         edit_tweet.value = '';
@@ -245,11 +244,10 @@ const editTweet = async(index:number) => {
             scheduleTweet: edit_date.value,
             tweet: edit_tweet.value,
             gifLink: gifToSend_edit.value
+        }).catch((err) => {
+            console.log('error :', err);
+            return ;
         })
-            .catch((err) => {
-                console.log('error :', err);
-                return ;
-            })
         display_gif.value = false;
         registerGifs.value = undefined;
         gifToSend.value = undefined;

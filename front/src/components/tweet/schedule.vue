@@ -15,9 +15,7 @@ const props = defineProps(['date', 'display_schedule'])
 const emit = defineEmits(['update:date', 'update:display_schedule'])
 
 const updateValueSchedule = computed({
-    get: () => {
-
-    },
+    get: () => {},
     set: async(value:any) => {
         await emit('update:date', value);
     }
