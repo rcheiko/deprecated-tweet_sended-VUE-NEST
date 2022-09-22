@@ -1,5 +1,5 @@
 <template>
-    <p class="button" @click="display_schedule = !display_schedule"><i class="fa-solid fa-calendar-days"></i></p>
+    <p class="button" @click="emit('update:display_schedule', !display_schedule)"><i class="fa-solid fa-calendar-days"></i></p>
     <div>
         <DatePicker v-if="display_schedule === true" v-model="updateValueSchedule" mode="datetime"/>
     </div>
@@ -7,32 +7,25 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, computed } from 'vue'
+import { computed } from 'vue'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
-import axios from 'axios'
-import router from '../../router'
 
-const props = defineProps(['date'])
-const emit = defineEmits(['update:date'])
-
-const display_schedule = ref(false)
-const schedule = ref();
+const props = defineProps(['date', 'display_schedule'])
+const emit = defineEmits(['update:date', 'update:display_schedule'])
 
 const updateValueSchedule = computed({
     get: () => {
 
     },
-    set: (value:any) => {
-        emit('update:date', value);
-        schedule.value = value;
+    set: async(value:any) => {
+        await emit('update:date', value);
     }
 });
 
-const cancel_schedule = () => {
-    schedule.value = undefined;
-    display_schedule.value = false;
-    emit('update:date', schedule.value);
+const cancel_schedule = async() => {
+    await emit('update:display_schedule', false);
+    await emit('update:date', undefined);
 }
 
 </script>

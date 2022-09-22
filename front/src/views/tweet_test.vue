@@ -1,7 +1,7 @@
 <template>
     <body>
         <div>
-            <form @submit.prevent="">
+            <form @submit.prevent="tweet_for_someone()">
                 <label for="_subject">Tweet for someone : </label>
                 <select class="select-twitter-account" v-model="tweetos_selected" required>
                     <option disabled value="">Twitter name</option>
@@ -10,21 +10,25 @@
                 </select>
                 <textarea v-model="_tweet" id="_subject" name="_subject" placeholder="Tweet something.." required></textarea>
                 <div class="multiple_button_tweet"> <!-- MULTIPLE CHOICE FOR TWEET -->
-                    <chooseGif v-model:display_gif="display_gif"  v-model:gifToSend="gifToSend"></chooseGif>
-                    <schedule v-model:date="dateScheduledTweet"></schedule>
+                    <chooseGif v-model:gifSelected="gifSelected" v-model:display_gif="display_gif"  v-model:gifToSend="gifToSend"></chooseGif>
+                    <schedule v-model:display_schedule="display_schedule" v-model:date="dateScheduledTweet"></schedule>
                     <pictureDownload v-model:pic="pic" v-model:allPicture="allPicture" v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload>
                     <button class="button" type="submit">Tweet</button>
                 </div>
             </form>
+            <p>{{message_tweet}}</p> <!-- Message when the user programmed or sended a tweet -->
             <pictureDisplay v-model:pic="pic" v-model:allPicture="allPicture"></pictureDisplay>
-            <displaySchedule></displaySchedule>
+            <displaySchedule v-model:scheduleTweetArr="scheduleTweetArr" v-model:display_schedule="display_schedule"></displaySchedule>
         </div>
     </body>
+    <button @click="test()">test</button>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { userInformationStore } from '@/stores/user_information'
+import { createTweet, createTweet_gif } from '@/constants/graphql'
+import { useMutation } from '@vue/apollo-composable'
 import axios from 'axios'
 import authHeader from '@/services/auth-header'
 import chooseGif from '../components/tweet/chooseGif.vue'
@@ -33,23 +37,28 @@ import pictureDownload from '../components/tweet/picture/pictureDownloadTweet.vu
 import pictureDisplay from '../components/tweet/picture/pictureDisplayTweet.vue'
 import displaySchedule from '../components/tweet/displayScheduleTweet.vue'
 
+const { mutate: _createTweet, onDone: _createTweetDone } = useMutation(createTweet);
+const { mutate: _createTweetGif} = useMutation(createTweet_gif);
+
 const user = userInformationStore();
 
 const tweetos_selected = ref('') // v-model on tweetos selected by user in the form tweet
 const _tweet = ref('') // v-model on tweet form
 const userPermission = ref(); // user that gave permission to this user
-// const scheduleTweet = ref(); // all the tweet that the user scheduled
 const display_gif = ref(false) // check is we show the menu to take a gif
 const gifToSend = ref(); // The gif that the user selected and want to send
-const dateScheduledTweet = ref (''); // Date that the user put to schedule his tweet
+const dateScheduledTweet = ref (); // Date that the user put to schedule his tweet
 const pic = ref([{}]);  // All picture selected to display with url created
 pic.value.shift();
 const allPicture = ref(['']); // All picture selected by the user with all information (size ...)
 allPicture.value.shift();
+const message_tweet = ref('') // Notification message
+const gifSelected = ref(); // Gif selected by the user
+const scheduleTweetArr = ref(); // All the schedule tweet will be stocked here
+const display_schedule = ref(false) // display the menu schedule
 
 const test = () => {
-    console.log("ALL PICTURE :", allPicture.value);
-    console.log("pic value", pic.value);
+    console.log("TEST :", gifSelected.value);
 }
 
 onBeforeMount(async () => {
@@ -62,6 +71,86 @@ onBeforeMount(async () => {
 	        console.log('error : ' + err);
 	    })
 })
+
+const hide_message = () => {
+    setTimeout(() => message_tweet.value = "", 2000);
+}
+
+const tweet_for_someone = async() => {
+    let user_id;
+    let user = await JSON.parse(localStorage.getItem('user') || '');
+    for (let i = 0; userPermission.value[i]; i++){
+        if (userPermission.value[i].data.username === tweetos_selected.value){
+            user_id = userPermission.value[i].data.id;
+        }
+    }
+    if (dateScheduledTweet.value === undefined) {
+        if (gifToSend.value === undefined) {
+            await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/tweetPermission/' + user.id, { tweet: _tweet.value, user_id: user_id}, {headers: authHeader()})
+                .then(() => {
+                    message_tweet.value = "The message has been sended."
+                    hide_message();
+                })
+                .catch((e: Error) => {
+                    console.log('error : ' + e);
+                })
+        }
+        else {
+            await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/tweetPermission/' + user.id, { tweet: _tweet.value, user_id: user_id, gif: gifToSend.value}, {headers: authHeader()})
+                .then(() => {
+                    message_tweet.value = "The message has been sended."
+                    hide_message();
+                })
+                .catch((e: Error) => {
+                    console.log('error : ' + e);
+                })
+        }
+    }
+    else {
+        if (gifToSend.value === undefined) {
+            await _createTweet({
+                tweet: _tweet.value,
+                scheduleTweet: dateScheduledTweet.value,
+                user_id_owner: user.id,
+                user_id: user_id
+            })
+            .catch((err: any) => {
+                console.log("error :", err);
+                return ;
+            })
+            message_tweet.value = "The message has been Programmed."
+            hide_message();
+        }
+        else {
+            await _createTweetGif({
+                tweet: _tweet.value,
+                scheduleTweet: dateScheduledTweet.value,
+                gifLink: gifToSend.value,
+                user_id_owner: user.id,
+                user_id: user_id
+            })
+            .catch((err: any) => {
+                console.log("error :", err);
+                return ;
+            })
+            message_tweet.value = "The message has been Programmed."
+            hide_message();
+        }
+	    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
+	        .then(async(response) => {
+                scheduleTweetArr.value = await response.data;
+	        })
+	        .catch((err: Error) => {
+	            console.log('error : ' + err);
+	        })
+    }
+    dateScheduledTweet.value = undefined;
+    display_schedule.value = false;
+    display_gif.value = false;
+    gifToSend.value = undefined;
+    gifSelected.value = undefined;
+    _tweet.value = '';
+}
 
 </script>
 

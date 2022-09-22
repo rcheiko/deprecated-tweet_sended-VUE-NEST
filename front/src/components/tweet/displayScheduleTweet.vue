@@ -1,8 +1,8 @@
 <template>
-        <div class="schedule" v-if="scheduleTweet">
+        <div class="schedule" v-if="scheduleTweetArr">
             <p>Schedule Tweet :</p>
             <br>
-            <div class="every_tweet" v-for="(info, index) in scheduleTweet">
+            <div class="every_tweet" v-for="(info, index) in scheduleTweetArr">
                 <div class="img-name-tweet">
                     <div class="img-profile" :style="{'background-image':'url(' + info.profile_image_url + ')'}"></div>
                     <p>{{info.username}}</p>
@@ -25,16 +25,17 @@ import { useMutation } from '@vue/apollo-composable'
 import authHeader from '@/services/auth-header'
 import axios from 'axios'
 
-const scheduleTweet = ref(); // All the schedule tweet will be stocked here
+// const scheduleTweet = ref(); // All the schedule tweet will be stocked here
 const { mutate: _removeTweet, onDone: _removeTweetDone } = useMutation(removeTweet);
-const props = defineProps([]);
-const emit = defineEmits([]);
+const props = defineProps(['scheduleTweetArr']);
+const emit = defineEmits(['update:scheduleTweetArr']);
 
 onBeforeMount(async () => {
     let user = await JSON.parse(localStorage.getItem('user') || '');
 	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
-            scheduleTweet.value = await response.data;
+            await emit('update:scheduleTweetArr', response.data);
+            // scheduleTweet.value = await response.data;
 	    })
 	    .catch((err: Error) => {
 	        console.log('error : ' + err);
@@ -57,13 +58,14 @@ onBeforeMount(async () => {
 
 const remove_shedule_tweet = async (index:number) => {
     let user = await JSON.parse(localStorage.getItem('user') || '');
-    await _removeTweet({id: scheduleTweet.value[index].id})
+    await _removeTweet({id: props.scheduleTweetArr[index].id})
         .catch((err: Error) => {
             console.log("error :", err);
         })
 	await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
 	    .then(async(response) => {
-            scheduleTweet.value = await response.data;
+            // scheduleTweet.value = await response.data;
+            await emit('update:scheduleTweetArr', response.data);
 	    })
 	    .catch((err: Error) => {
 	        console.log('error : ' + err);
