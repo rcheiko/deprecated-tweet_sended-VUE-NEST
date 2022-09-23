@@ -77,7 +77,7 @@ const remove_shedule_tweet = async (index:number) => {
         display: flex;
         align-self: flex-start;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
         text-align: center;
     }
     .every_tweet {

@@ -12,39 +12,29 @@
                 <div class="multiple_button_tweet"> <!-- MULTIPLE CHOICE FOR TWEET -->
                     <chooseGif v-model:gifSelected="gifSelected" v-model:display_gif="display_gif"  v-model:gifToSend="gifToSend"></chooseGif>
                     <schedule v-model:display_schedule="display_schedule" v-model:date="dateScheduledTweet"></schedule>
-                    <pictureDownload v-model:pic="pic" v-model:allPicture="allPicture" v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload>
+                    <pictureDownload v-model:pic="pic" v-model:allPicture="allPictur" v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload>
                     <button class="button" type="submit">Tweet</button>
                 </div>
             </form>
             <p>{{message_tweet}}</p> <!-- Message when the user programmed or sended a tweet -->
-            <pictureDisplay v-model:pic="pic" v-model:allPicture="allPicture"></pictureDisplay>
+            <pictureDisplay v-model:pic="pic" v-model:allPicture="allPictur"></pictureDisplay>
             <displaySchedule :edit_shedule_tweet="edit_shedule_tweet" v-model:scheduleTweetArr="scheduleTweetArr" v-model:display_schedule="display_schedule"></displaySchedule>
         </div>
-
         <div v-if="display_edit">
-            <form @submit.prevent="">
+            <form @submit.prevent="editTweet(id_edit)">
                 <label for="_subjectEdit">Edit Tweet :</label>
                 <textarea v-model="edit_tweet" id="_subjectEdit" name="_subjectEdit" placeholder="Tweet something.." required></textarea>
 
                 <div class="multiple_button_tweet">
                     <chooseGif v-model:gifSelected="gifSelected_edit" v-model:display_gif="display_gif_edit"  v-model:gifToSend="gifToSend_edit"></chooseGif>
                     <schedule v-model:display_schedule="display_schedule_edit" v-model:date="edit_dateScheduledTweet"></schedule>
-                    <pictureDownload v-model:pic="picEdit" v-model:allPicture="allPictureEdit" v-model:display_gif="display_gif_edit" v-model:gifToSend="gifToSend_edit"></pictureDownload>
+                    <pictureDownloadEdit v-model:pic="picEdit" v-model:allPicture="allPictureEdit" v-model:display_gif="display_gif_edit" v-model:gifToSend="gifToSend_edit"></pictureDownloadEdit>
                     <button class="button" type="submit">Save</button>
                 </div>
-
-                <!-- <div class="multiple_button_tweet"> MULTIPLE CHOICE FOR TWEET -->
-                    <!-- <chooseGif v-model:gifSelected="gifSelected" v-model:display_gif="display_gif"  v-model:gifToSend="gifToSend"></chooseGif> -->
-                    <!-- <schedule v-model:display_schedule="display_schedule" v-model:date="dateScheduledTweet"></schedule> -->
-                    <!-- <pictureDownload v-model:pic="pic" v-model:allPicture="allPicture" v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload> -->
-                    <!-- <button class="button" type="submit">Tweet</button> -->
-                <!-- </div> -->
             </form>
+            <pictureDisplay v-model:pic="picEdit" v-model:allPicture="allPictureEdit"></pictureDisplay>
             <p>{{message_tweet}}</p> <!-- Message when the user programmed or sended a tweet -->
-            <!-- <pictureDisplay v-model:pic="pic" v-model:allPicture="allPicture"></pictureDisplay> -->
-            <!-- <displaySchedule :edit_shedule_tweet="edit_shedule_tweet" v-model:scheduleTweetArr="scheduleTweetArr" v-model:display_schedule="display_schedule"></displaySchedule> -->
         </div>
-
     </body>
 </template>
 
@@ -52,18 +42,21 @@
 import { onBeforeMount, ref } from 'vue'
 import type { Ref } from 'vue'
 import { userInformationStore } from '@/stores/user_information'
-import { createTweet, createTweet_gif } from '@/constants/graphql'
+import { createTweet, createTweet_gif, updateTweet, updateTweet_gif } from '@/constants/graphql'
 import { useMutation } from '@vue/apollo-composable'
 import axios from 'axios'
 import authHeader from '@/services/auth-header'
 import chooseGif from '../components/tweet/chooseGif.vue'
 import schedule from '../components/tweet/schedule.vue'
 import pictureDownload from '../components/tweet/picture/pictureDownloadTweet.vue'
+import pictureDownloadEdit from '../components/tweet/picture/pictureDownloadTweetEdit.vue'
 import pictureDisplay from '../components/tweet/picture/pictureDisplayTweet.vue'
 import displaySchedule from '../components/tweet/displayScheduleTweet.vue'
 
 const { mutate: _createTweet, onDone: _createTweetDone } = useMutation(createTweet);
 const { mutate: _createTweetGif} = useMutation(createTweet_gif);
+const { mutate: _updateTweet, onDone: _updateTweetDone } = useMutation(updateTweet);
+const { mutate: _updateTweet_gif, onDone: _updateTweet_gifDone } = useMutation(updateTweet_gif);
 
 const user = userInformationStore();
 
@@ -76,8 +69,8 @@ const gifToSend = ref(); // The gif that the user selected and want to send
 const dateScheduledTweet = ref (); // Date that the user put to schedule his tweet
 const pic = ref([{}]);  // All picture selected to display with url created
 pic.value.shift();
-const allPicture = ref(['']); // All picture selected by the user with all information (size ...)
-allPicture.value.shift();
+const allPictur = ref(['']); // All picture selected by the user with all information (size ...)
+allPictur.value.shift();
 const message_tweet = ref('') // Notification message
 const gifSelected = ref(); // Gif selected by the user
 const scheduleTweetArr = ref(); // All the schedule tweet will be stocked here
@@ -189,8 +182,48 @@ const tweet_for_someone = async() => {
     _tweet.value = '';
 }
 
+const editTweet = async(index:number) => {
+    let user = await JSON.parse(localStorage.getItem('user') || '');
+    if (gifToSend_edit.value === undefined) {
+        await _updateTweet({
+            id:scheduleTweetArr.value[index].id,
+            scheduleTweet: edit_dateScheduledTweet.value,
+            tweet: edit_tweet.value 
+        }).catch((err: any) => {
+            console.log('error :', err);
+            return ;
+        })
+        display_edit.value = false;
+        edit_dateScheduledTweet.value = undefined;
+        edit_tweet.value = '';
+    }
+    else {
+        await _updateTweet_gif({
+            id:scheduleTweetArr.value[index].id,
+            scheduleTweet: edit_dateScheduledTweet.value,
+            tweet: edit_tweet.value,
+            gifLink: gifToSend_edit.value
+        }).catch((err: any) => {
+            console.log('error :', err);
+            return ;
+        })
+        display_gif_edit.value = false;
+        gifToSend_edit.value = undefined;
+        gifSelected_edit.value = undefined;
+        display_edit.value = false;
+        edit_dateScheduledTweet.value = undefined;
+        edit_tweet.value = '';
+    }
+    await axios.get(import.meta.env.VITE_BACKEND_URL + '/tweet/schedule/' + user.id, {headers: authHeader()})
+	    .then(async(response) => {
+            scheduleTweetArr.value = await response.data;
+	    })
+	    .catch((err: Error) => {
+	        console.log('error : ' + err);
+	    })
+}
+
 const edit_shedule_tweet = async (index:number) => {
-    console.log('index :', index);
     if (display_edit.value) {
         display_edit.value = false;
         edit_dateScheduledTweet.value = undefined;
@@ -202,7 +235,6 @@ const edit_shedule_tweet = async (index:number) => {
         edit_dateScheduledTweet.value = scheduleTweetArr.value[index].scheduleTweet;
         edit_tweet.value = scheduleTweetArr.value[index].tweet;
     }
-    console.log('display :', display_edit.value);
 }
 
 </script>
