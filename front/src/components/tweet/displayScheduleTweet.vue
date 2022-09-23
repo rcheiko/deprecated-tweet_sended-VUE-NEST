@@ -12,7 +12,7 @@
                 <div v-if="info.gifLink" class="gif-image img-selected" :style="{'background-image':'url(' + info.gifLink + ')'}"></div>
                 <div class="multiple_button_tweet">
                     <button class="button" @click="remove_shedule_tweet(index)">Remove</button>
-                    <!-- <button class="button" @click="edit_shedule_tweet(index)">Edit</button> -->
+                    <button class="button" @click="edit_shedule_tweet(index)">Edit</button>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@ import authHeader from '@/services/auth-header'
 import axios from 'axios'
 
 const { mutate: _removeTweet, onDone: _removeTweetDone } = useMutation(removeTweet);
-const props = defineProps(['scheduleTweetArr']);
+const props = defineProps(['scheduleTweetArr', 'edit_shedule_tweet']);
 const emit = defineEmits(['update:scheduleTweetArr']);
 
 onBeforeMount(async () => {
@@ -41,17 +41,17 @@ onBeforeMount(async () => {
 })
 
 // const edit_shedule_tweet = async (index:number) => {
-    // if (display_edit.value) {
-        // display_edit.value = false;
-        // edit_date.value = undefined;
-        // edit_tweet.value = '';
-    // }
-    // else {
-        // id_edit.value = index;
-        // display_edit.value = true;
-        // edit_date.value = scheduleInfo.value[index].scheduleTweet;
-        // edit_tweet.value = scheduleInfo.value[index].tweet;
-    // }
+//     if (display_edit.value) {
+//         display_edit.value = false;
+//         edit_date.value = undefined;
+//         edit_tweet.value = '';
+//     }
+//     else {
+//         id_edit.value = index;
+//         display_edit.value = true;
+//         edit_date.value = scheduleInfo.value[index].scheduleTweet;
+//         edit_tweet.value = scheduleInfo.value[index].tweet;
+//     }
 // }
 
 const remove_shedule_tweet = async (index:number) => {
