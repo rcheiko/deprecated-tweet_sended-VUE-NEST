@@ -13,7 +13,6 @@ import Navbar from './components/Navbar.vue'
 import { provideApolloClient } from '@vue/apollo-composable'
 import { apolloClient } from './main'
 import { onBeforeMount, ref } from 'vue'
-// const { result, loading, error } = useQuery(all_users_query);
 import { userInformationStore } from '@/stores/user_information'
 
 provideApolloClient(apolloClient)
@@ -22,31 +21,6 @@ const user = userInformationStore();
 onBeforeMount(async () => {
   user.getInfoUser();
 })
-
-// const variables = ref({
-//   id: 1,
-// })
-
-// const a = useQuery(oneUser, () => ({ id: variables.value.id}))
-
-// const fct = async () => {
-//   // console.log(user.value)
-//   // console.log(result);
-//   return a
-// }
-
-// const rep = async () => {
-//   const a = await fct()
-//   const user = computed(() => a.result.value?.findOneUser ?? [])
-//   // const a = await user;
-//   console.log(user.value);
-// }
-
-// const { result, loading, error } = await useQuery(all_users_query);
-// const users = await computed(() => result.value?.findAllPermissions ?? [])
-
-// const { result, loading, error } = useQuery(oneUser);
-// const user = computed(() => result.value?.findOnePermission ?? [])
 
 </script>
 
