@@ -10,13 +10,13 @@
                 <router-link class="router logged" to="/">Home</router-link>
                 <router-link class="router logged" to="/profile">Profile</router-link>
                 <router-link class="router logged" to="/permission">Permission</router-link>
-                <router-link class="router logged" to="/tweet">Tweet</router-link>
+                <router-link class="router logged" to="/tweet_test">Tweet</router-link>
               </div>
               <div v-else>
                 <router-link class="router no-login" to="/">Home</router-link>
                 <router-link class="router no-login" to="/profile">Profile</router-link>
                 <router-link class="router no-login" to="/permission">Permission</router-link>
-                <router-link class="router no-login" to="/tweet">Tweet</router-link>
+                <router-link class="router no-login" to="/tweet_test">Tweet</router-link>
               </div>
             </div>
             <div class="router-end">

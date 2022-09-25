@@ -46,7 +46,7 @@ export class UsersController {
     async test(@UploadedFiles() files: Array<Express.Multer.File>) {
       console.log('files :', files);
       if (!files[0]?.filename) {
-          console.log('File must be a png/jpg/jpeg/gif');
+          console.log('File must be a png/jpg/jpeg/gif/mp4');
         }
       return 'File has been uploaded';
     }

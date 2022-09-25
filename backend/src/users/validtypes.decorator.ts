@@ -6,7 +6,7 @@ export const saveImageStore = {
       fileSize: 240000,
   },
   fileFilter: (req: any, file: any, cb: any) => {
-      if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+      if (file.mimetype.match(/\/(jpg|jpeg|png|gif|mp4)$/)) {
           cb(null, true);
       } else {
           cb(null, false);
