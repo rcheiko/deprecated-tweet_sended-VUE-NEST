@@ -7,8 +7,9 @@
                     <div class="img-profile" :style="{'background-image':'url(' + info.profile_image_url + ')'}"></div>
                     <p>{{info.username}}</p>
                 </div>
-                <p>Tweet : {{info.tweet}}</p>
-                <p>Schedule : {{info.scheduleTweet}}</p>
+                    <p v-if="info.tweet.length >= 20">Tweet : {{info.tweet.substring(0,20)}}...</p>                
+                    <p v-else>Tweet : {{info.tweet}}</p>                
+                <p>Schedule : {{new Date(Date.parse(info.scheduleTweet)).toLocaleDateString()}}</p>
                 <div v-if="info.gifLink" class="gif-image img-selected" :style="{'background-image':'url(' + info.gifLink + ')'}"></div>
                 <div class="multiple_button_tweet">
                     <button class="button" @click="remove_shedule_tweet(index)">Remove</button>

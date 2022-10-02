@@ -8,23 +8,22 @@
                     <option>{{user.tag}}</option>
                     <option v-for="res in userPermission">{{res.data.username}}</option>
                 </select>
-                <textarea v-model="_tweet" id="_subject" name="_subject" placeholder="Tweet something.." required></textarea>
+                <textarea v-model="_tweet" id="_subject" name="_subject" placeholder="Tweet something.." maxlength="280" required></textarea>
                 <div class="multiple_button_tweet"> <!-- MULTIPLE CHOICE FOR TWEET -->
                     <chooseGif v-model:gifSelected="gifSelected" v-model:display_gif="display_gif"  v-model:gifToSend="gifToSend"></chooseGif>
                     <schedule v-model:display_schedule="display_schedule" v-model:date="dateScheduledTweet"></schedule>
-                    <pictureDownload v-model:pic="pic" v-model:allPicture="allPictur" v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload>
+                    <pictureDownload v-model:pic="pic" v-model:allPicture="allPicture" v-model:display_gif="display_gif" v-model:gifToSend="gifToSend"></pictureDownload>
                     <button class="button" type="submit">Tweet</button>
                 </div>
             </form>
             <p>{{message_tweet}}</p> <!-- Message when the user programmed or sended a tweet -->
-            <pictureDisplay v-model:pic="pic" v-model:allPicture="allPictur"></pictureDisplay>
+            <pictureDisplay v-model:pic="pic" v-model:allPicture="allPicture"></pictureDisplay>
             <displaySchedule :edit_shedule_tweet="edit_shedule_tweet" v-model:scheduleTweetArr="scheduleTweetArr" v-model:display_schedule="display_schedule"></displaySchedule>
         </div>
         <div v-if="display_edit">
             <form @submit.prevent="editTweet(id_edit)">
                 <label for="_subjectEdit">Edit Tweet :</label>
-                <textarea v-model="edit_tweet" id="_subjectEdit" name="_subjectEdit" placeholder="Tweet something.." required></textarea>
-
+                <textarea v-model="edit_tweet" id="_subjectEdit" name="_subjectEdit" placeholder="Tweet something.." maxlength="280" required></textarea>
                 <div class="multiple_button_tweet">
                     <chooseGif v-model:gifSelected="gifSelected_edit" v-model:display_gif="display_gif_edit"  v-model:gifToSend="gifToSend_edit"></chooseGif>
                     <schedule v-model:display_schedule="display_schedule_edit" v-model:date="edit_dateScheduledTweet"></schedule>
@@ -69,8 +68,8 @@ const gifToSend = ref(); // The gif that the user selected and want to send
 const dateScheduledTweet = ref (); // Date that the user put to schedule his tweet
 const pic = ref([{}]);  // All picture selected to display with url created
 pic.value.shift();
-const allPictur = ref(['']); // All picture selected by the user with all information (size ...)
-allPictur.value.shift();
+const allPicture = ref(['']); // All picture selected by the user with all information (size ...)
+allPicture.value.shift();
 const message_tweet = ref('') // Notification message
 const gifSelected = ref(); // Gif selected by the user
 const scheduleTweetArr = ref(); // All the schedule tweet will be stocked here
@@ -182,7 +181,9 @@ const tweet_for_someone = async() => {
     _tweet.value = '';
 }
 
-const editTweet = async(index:number) => {
+const editTweet = async(index:number | undefined) => {
+    if (typeof index === undefined)
+        return;
     let user = await JSON.parse(localStorage.getItem('user') || '');
     if (gifToSend_edit.value === undefined) {
         await _updateTweet({
