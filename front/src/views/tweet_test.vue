@@ -114,8 +114,12 @@ const tweet_for_someone = async() => {
         }
     }
     if (dateScheduledTweet.value === undefined) {
-        if (gifToSend.value === undefined) {
-            await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/tweetPermission/' + user.id, { tweet: _tweet.value, user_id: user_id}, {headers: authHeader()})
+        if (allPicture.value.length > 0) {
+            console.log('aaaaa');
+            // Tweet with picture
+        }
+        else if (gifToSend.value) {
+            await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/tweetPermission/' + user.id, { tweet: _tweet.value, user_id: user_id, gif: gifToSend.value}, {headers: authHeader()})
                 .then(() => {
                     message_tweet.value = "The message has been sended."
                     hide_message();
@@ -125,7 +129,7 @@ const tweet_for_someone = async() => {
                 })
         }
         else {
-            await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/tweetPermission/' + user.id, { tweet: _tweet.value, user_id: user_id, gif: gifToSend.value}, {headers: authHeader()})
+            await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/tweetPermission/' + user.id, { tweet: _tweet.value, user_id: user_id}, {headers: authHeader()})
                 .then(() => {
                     message_tweet.value = "The message has been sended."
                     hide_message();
@@ -136,10 +140,15 @@ const tweet_for_someone = async() => {
         }
     }
     else {
-        if (gifToSend.value === undefined) {
-            await _createTweet({
+        if (allPicture.value.length > 0) {
+            // tweet schedule with picture 
+            console.log('All Picture');
+        }
+        else if (gifToSend.value) {
+            await _createTweetGif({
                 tweet: _tweet.value,
                 scheduleTweet: dateScheduledTweet.value,
+                gifLink: gifToSend.value,
                 user_id_owner: user.id,
                 user_id: user_id
             })
@@ -151,10 +160,9 @@ const tweet_for_someone = async() => {
             hide_message();
         }
         else {
-            await _createTweetGif({
+            await _createTweet({
                 tweet: _tweet.value,
                 scheduleTweet: dateScheduledTweet.value,
-                gifLink: gifToSend.value,
                 user_id_owner: user.id,
                 user_id: user_id
             })
