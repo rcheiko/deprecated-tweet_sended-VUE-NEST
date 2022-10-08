@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const saveImageStore = {
     limits: {
-      fileSize: 240000,
+      fileSize: 300000000,
   },
   fileFilter: (req: any, file: any, cb: any) => {
       if (file.mimetype.match(/\/(jpg|jpeg|png|gif|mp4)$/)) {

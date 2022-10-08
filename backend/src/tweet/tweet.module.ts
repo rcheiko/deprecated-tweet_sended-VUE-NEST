@@ -12,15 +12,20 @@ import { Permission } from 'src/permission/entities/permission.entity';
 import { PermissionsModule } from 'src/permission/permissions.module';
 import { HttpModule } from '@nestjs/axios';
 import { jwtStrategy } from 'src/jwt.strategy';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
-              TypeOrmModule.forFeature([Tweet, User, Permission]),
-              PermissionsModule,
-              HttpModule,
-              UsersModule,
-              ScheduleModule.forRoot(),
-            ],
+    TypeOrmModule.forFeature([Tweet, User, Permission]),
+    PermissionsModule,
+    HttpModule,
+    UsersModule,
+    ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 30,
+    }),
+  ],
   providers: [TweetResolver, TweetService, jwtStrategy,
     {
       provide: 'usersService',
@@ -28,4 +33,4 @@ import { jwtStrategy } from 'src/jwt.strategy';
     }],
   controllers: [TweetController],
 })
-export class TweetModule {}
+export class TweetModule { }

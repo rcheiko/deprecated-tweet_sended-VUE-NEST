@@ -1,9 +1,7 @@
 import { Body, Controller, Get, Param, Post, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtGuard } from 'src/jwt.guard';
-import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { saveImageStore } from './validtypes.decorator';
 
 @Controller('users')

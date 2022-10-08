@@ -10,6 +10,7 @@ import { HttpModule } from '@nestjs/axios';
 import { jwtStrategy } from 'src/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { MulterModule } from '@nestjs/platform-express';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [HttpModule,
@@ -19,7 +20,11 @@ import { MulterModule } from '@nestjs/platform-express';
       secret: process.env.SECRET_JWT,
       signOptions: { expiresIn: '1d'}
     }),
-    MulterModule.register({ dest: './file/image' })],
+    MulterModule.register({ dest: './file/image' }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 30,
+    }),],
   providers: [UsersService, UsersResolver, jwtStrategy,
     {
       provide: 'usersService',
