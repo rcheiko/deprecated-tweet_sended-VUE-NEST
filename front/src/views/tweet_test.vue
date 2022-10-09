@@ -45,6 +45,7 @@ import { createTweet, createTweet_gif, updateTweet, updateTweet_gif } from '@/co
 import { useMutation } from '@vue/apollo-composable'
 import axios from 'axios'
 import authHeader from '@/services/auth-header'
+import authHeaderFile from '@/services/auth-header-file'
 import chooseGif from '../components/tweet/chooseGif.vue'
 import schedule from '../components/tweet/schedule.vue'
 import pictureDownload from '../components/tweet/picture/pictureDownloadTweet.vue'
@@ -117,6 +118,20 @@ const tweet_for_someone = async() => {
         if (allPicture.value.length > 0) {
             console.log('aaaaa');
             // Tweet with picture
+            let formData = new FormData();
+            for (let i = 0; allPicture.value[i]; i++) {
+                formData.append("file", allPicture.value[i]);
+            }
+            formData.append("tweet", _tweet.value);
+            formData.append("user_id", user_id);
+            await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/file/' + user.id, formData, {headers:{'Authorization':authHeaderFile(),'Content-Type': 'multipart/form-data'}})
+                .then(() => {
+                    message_tweet.value = "The message has been sended."
+                    hide_message();
+                })
+                .catch((e: Error) => {
+                    console.log('error : ' + e);
+                })
         }
         else if (gifToSend.value) {
             await axios.post(import.meta.env.VITE_BACKEND_URL + '/users/tweetPermission/' + user.id, { tweet: _tweet.value, user_id: user_id, gif: gifToSend.value}, {headers: authHeader()})

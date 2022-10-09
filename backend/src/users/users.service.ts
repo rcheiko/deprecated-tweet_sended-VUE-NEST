@@ -12,12 +12,12 @@ import { lastValueFrom } from 'rxjs';
 @Injectable()
 export class UsersService {
   constructor(
-  @InjectRepository(User) private usersRepository: Repository<User>,
-  @InjectRepository(Permission) private permissionsRepository: Repository<Permission>,
-  private readonly configService: ConfigService,
-  @Inject(forwardRef(() => PermissionsService))
-  private permissionsService: PermissionsService,
-  private readonly httpService: HttpService) {}
+    @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(Permission) private permissionsRepository: Repository<Permission>,
+    private readonly configService: ConfigService,
+    @Inject(forwardRef(() => PermissionsService))
+    private permissionsService: PermissionsService,
+    private readonly httpService: HttpService) { }
 
   async createPermission(user_id_owner: string, nameUser: string): Promise<Permission | void> {
     const twitterClient = new TwitterApi(this.configService.get('BEARER_TOKEN'));
@@ -32,16 +32,16 @@ export class UsersService {
     }
     const checkIfExist = await this.permissionsService.findOneUser(user_id, user_owner.id)
     if (checkIfExist === undefined) {
-      const newPermission: any = this.permissionsRepository.create({user_id: user_id});
+      const newPermission: any = this.permissionsRepository.create({ user_id: user_id });
       const user = await this.findOneId(user_id_owner);
-  
+
       newPermission.user = user // Make the relation OneToMany
-  
+
       const res = await this.permissionsRepository.save(newPermission).catch((err) => {
         console.log("error permission");
         return user_owner;
       })
-      return res;  
+      return res;
     }
     console.log("Error permission already exist")
     return user_owner;
@@ -53,15 +53,15 @@ export class UsersService {
     const userPerm: any = await this.permissionsService.findOneUser(user.user_id, user_owner.id)
     await this.permissionsRepository.remove(userPerm);
 
-    return user_owner; 
+    return user_owner;
   }
 
   async findAll(): Promise<User[] | void> {
     const res = await this.usersRepository.find()
-    .catch((err) => {
-      console.log("Error :", err);
-      return ;
-    })
+      .catch((err) => {
+        console.log("Error :", err);
+        return;
+      })
     return res;
   }
 
@@ -73,7 +73,7 @@ export class UsersService {
       relations: ['permission']
     }).catch((err) => {
       console.log("Error :", err)
-      return ;
+      return;
     })
     return res;
   }
@@ -86,7 +86,7 @@ export class UsersService {
       relations: ['permission'],
     }).catch((err) => {
       console.log("Error :", err);
-      return ;
+      return;
     })
     return res;
   }
@@ -100,16 +100,16 @@ export class UsersService {
       })
       .catch((err) => {
         console.log("Error", err);
-        return ;
+        return;
       })
     const twitterClient = new TwitterApi(this.configService.get('BEARER_TOKEN'));
     const roClient = twitterClient.readOnly;
-    for (let i = 0; user.permission[i]; i++){
-      result.push(await roClient.v2.user(user.permission[i].user_id, {'user.fields': ["profile_image_url"]})
-      .catch((err) => {
-        console.log("Error", err);
-        return ;
-      }));
+    for (let i = 0; user.permission[i]; i++) {
+      result.push(await roClient.v2.user(user.permission[i].user_id, { 'user.fields': ["profile_image_url"] })
+        .catch((err) => {
+          console.log("Error", err);
+          return;
+        }));
     }
     return result;
   }
@@ -120,11 +120,11 @@ export class UsersService {
     const twitterClient = new TwitterApi(this.configService.get('BEARER_TOKEN'));
     const roClient = twitterClient.readOnly;
     for (let i = 0; user[i]; i++) {
-      result.push(await roClient.v2.user(user[i].user.user_id, {'user.fields': []})
-      .catch((err) => {
-        console.log("Error :", err);
-        return ;
-      }));
+      result.push(await roClient.v2.user(user[i].user.user_id, { 'user.fields': [] })
+        .catch((err) => {
+          console.log("Error :", err);
+          return;
+        }));
     }
     return result;
   }
@@ -140,7 +140,7 @@ export class UsersService {
     const user: any = await this.findOneId(user_id)
       .catch((err) => {
         console.log('error :', err);
-        return ;
+        return;
       });
     const userClient = new TwitterApi({
       appKey: this.configService.get('API_KEY'),
@@ -152,28 +152,28 @@ export class UsersService {
       await userClient.v2.tweet(tweet);
     }
     else {
-      const gifDL:any = await this.downloadFile(media);
-      const gifData:any = await lastValueFrom(gifDL);
-      const buffer:any = Buffer.from(gifData.data, "utf-8");
+      const gifDL: any = await this.downloadFile(media);
+      const gifData: any = await lastValueFrom(gifDL);
+      const buffer: any = Buffer.from(gifData.data, "utf-8");
       const mediaId = await userClient.v1.uploadMedia(buffer, { mimeType: EUploadMimeType.Gif })
-      await userClient.v2.tweet(tweet, { media: {media_ids: [mediaId]} });
+      await userClient.v2.tweet(tweet, { media: { media_ids: [mediaId] } });
     }
   };
 
-  async downloadFile(url:any) {
+  async downloadFile(url: any) {
     return this.httpService.get(url, {
-        responseType: 'arraybuffer'
-      })
+      responseType: 'arraybuffer'
+    })
   }
 
   async tweetPermission(tweet: string, user_id_owner: string, user_id: string, gif?: string) {
     const userId: any = await this.findOneId(user_id);
     await this.permissionsService.findOneUser(user_id_owner, userId.id)
-        .catch((err) => {
-          console.log("error :", err);
-          return ;
-        })
-    
+      .catch((err) => {
+        console.log("error :", err);
+        return;
+      })
+
     const user: any = await this.findOneId(user_id);
     const userClient = new TwitterApi({
       appKey: this.configService.get('API_KEY'),
@@ -181,15 +181,44 @@ export class UsersService {
       accessToken: user.accessToken,
       accessSecret: user.accessSecret,
     });
-    if (gif === undefined){
+    if (gif === undefined) {
       await userClient.v2.tweet(tweet);
     }
-    else{
-      const gifDL:any = await this.downloadFile(gif);
-      const gifData:any = await lastValueFrom(gifDL);
-      const buffer:any = Buffer.from(gifData.data, "utf-8")
+    else {
+      const gifDL: any = await this.downloadFile(gif);
+      const gifData: any = await lastValueFrom(gifDL);
+      const buffer: any = Buffer.from(gifData.data, "utf-8")
       const mediaId = await userClient.v1.uploadMedia(buffer, { mimeType: EUploadMimeType.Gif })
-      await userClient.v2.tweet(tweet, { media: {media_ids: [mediaId]} });
+      await userClient.v2.tweet(tweet, { media: { media_ids: [mediaId] } });
     }
+  };
+
+  async tweetWithFiles(tweet: string, user_id_owner: string, user_id: string, media: Express.Multer.File[]) {
+    const userId: any = await this.findOneId(user_id);
+    await this.permissionsService.findOneUser(user_id_owner, userId.id)
+      .catch((err) => {
+        console.log("error :", err);
+        return;
+      })
+
+    const user: any = await this.findOneId(user_id);
+    const userClient = new TwitterApi({
+      appKey: this.configService.get('API_KEY'),
+      appSecret: this.configService.get('API_KEY_SECRET'),
+      accessToken: user.accessToken,
+      accessSecret: user.accessSecret,
+    });
+    console.log("MEDIA :", media[0].path)
+    let mediaId: Array<string> = [];
+    let res: string
+    for (let i = 0; media[i]; i++) {
+      await userClient.v1.uploadMedia(media[i].path).then((response: string) => {
+        res = response;
+        mediaId.push(res);
+      })
+        .catch((err: any) => { console.log("ERROR UPLOAD MEDIA :", err); })
+    }
+    console.log("MEDIA :", mediaId);
+    await userClient.v2.tweet(tweet, { media: { media_ids: mediaId } });
   };
 }

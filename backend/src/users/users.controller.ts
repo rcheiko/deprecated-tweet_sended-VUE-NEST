@@ -27,13 +27,13 @@ export class UsersController {
     return this.usersService.giveUsersTweet(params.user_id);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard) // tweet for user account
   @Post('tweet/:user_id')
   tweet(@Param() params: any, @Body() body: any): any {
     return this.usersService.tweet(body.tweet, params.user_id, body.media);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard) // tweet for someone
   @Post('tweetPermission/:user_id_owner')
   tweetPermission(@Param() params: any, @Body() body: any): any {
     return this.usersService.tweetPermission(body.tweet, params.user_id_owner, body.user_id, body.gif);
@@ -42,12 +42,15 @@ export class UsersController {
   @UseGuards(JwtGuard)
   @Post('file/:user_id')
   @UseInterceptors(AnyFilesInterceptor(saveImageStore))
-  async tweetWithFiles(@UploadedFiles() files: Array<Express.Multer.File>, @Body() body: any) {
+  async tweetWithFiles(@UploadedFiles() files: Array<Express.Multer.File>, @Body() body: any, @Param() params: any) {
     console.log('files :', files);
-    console.log('body :', body);
+    console.log('tweet :', body.tweet);
+    console.log('user_id :', body.user_id);
     if (!files[0]?.filename) {
       console.log('File must be a png/jpg/jpeg/gif/mp4');
+      return ;
     }
+    this.usersService.tweetWithFiles(body.tweet, params.user_id_owner, body.user_id, files)
     return 'File has been uploaded';
   }
 }
