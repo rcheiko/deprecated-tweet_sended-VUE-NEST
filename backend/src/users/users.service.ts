@@ -8,6 +8,7 @@ import { PermissionsService } from 'src/permission/permissions.service';
 import { Permission } from 'src/permission/entities/permission.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+const fs = require('fs');
 
 @Injectable()
 export class UsersService {
@@ -208,7 +209,6 @@ export class UsersService {
       accessToken: user.accessToken,
       accessSecret: user.accessSecret,
     });
-    console.log("MEDIA :", media[0].path)
     let mediaId: Array<string> = [];
     let res: string
     for (let i = 0; media[i]; i++) {
@@ -216,9 +216,11 @@ export class UsersService {
         res = response;
         mediaId.push(res);
       })
-        .catch((err: any) => { console.log("ERROR UPLOAD MEDIA :", err); })
+        .catch((err: any) => {console.log("ERROR UPLOAD MEDIA :", err);})
     }
-    console.log("MEDIA :", mediaId);
-    await userClient.v2.tweet(tweet, { media: { media_ids: mediaId } });
+    await userClient.v2.tweet(tweet, {media: { media_ids: mediaId }});
+    for (let i = 0; media[i]; i++) {
+      await fs.unlinkSync(media[i].path);
+    }
   };
 }

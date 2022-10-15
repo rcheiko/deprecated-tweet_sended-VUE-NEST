@@ -5,7 +5,7 @@
                 <label for="_subject">Tweet for someone : </label>
                 <select class="select-twitter-account" v-model="tweetos_selected" required>
                     <option disabled value="">Twitter name</option>
-                    <option>{{user.tag}}</option>
+                    <option>{{user.tag}} NOT WORK</option>
                     <option v-for="res in userPermission">{{res.data.username}}</option>
                 </select>
                 <textarea v-model="_tweet" id="_subject" name="_subject" placeholder="Tweet something.." maxlength="280" required></textarea>

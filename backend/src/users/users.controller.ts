@@ -51,6 +51,7 @@ export class UsersController {
       return ;
     }
     this.usersService.tweetWithFiles(body.tweet, params.user_id_owner, body.user_id, files)
+    
     return 'File has been uploaded';
   }
 }

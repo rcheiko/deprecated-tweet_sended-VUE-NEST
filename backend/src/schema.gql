@@ -16,6 +16,7 @@ type Tweet {
   tweet: String!
   user_id: String
   gifLink: String
+  mediaLink: String
   user: User!
   createdDate: DateTime!
 }

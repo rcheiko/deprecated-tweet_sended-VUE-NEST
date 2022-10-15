@@ -22,15 +22,18 @@ export class TweetService {
           console.log('error :', err);
           return ;
         })
-    for (let i = 0; allTweet[i]; i++){
+    for (let i = 0; allTweet[i]; i++) {
       if (allTweet[i].scheduleTweet.getTime() - Date.now() <= 0)
-      {    
-        if (allTweet[i].gifLink === null) {
-          await this.usersService.tweet(allTweet[i].tweet, allTweet[i].user.user_id)
+      {
+        if (allTweet[i].mediaLink) {
+          
+        }
+        else if (allTweet[i].gifLink) {
+          await this.usersService.tweet(allTweet[i].tweet, allTweet[i].user.user_id, allTweet[i].gifLink)
           await this.removeTweet(allTweet[i].id)
         }
         else {
-          await this.usersService.tweet(allTweet[i].tweet, allTweet[i].user.user_id, allTweet[i].gifLink)
+          await this.usersService.tweet(allTweet[i].tweet, allTweet[i].user.user_id)
           await this.removeTweet(allTweet[i].id)
         }
       }

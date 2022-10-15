@@ -26,6 +26,10 @@ export class Tweet {
     @Field({nullable:true})
     gifLink?: string;
 
+    @Column({nullable: true})
+    @Field({nullable:true})
+    mediaLink?: string;
+
     @ManyToOne(() => User, user => user.tweet, {onDelete: 'CASCADE'})
     @Field(type => User)
     user: User;
