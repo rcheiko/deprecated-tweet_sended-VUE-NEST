@@ -128,6 +128,32 @@ mutation(
   }
 }`;
 
+export const createTweet_media = gql`
+mutation(
+          $tweet: String!,
+          $scheduleTweet: DateTime!,
+          $user_id: String!,
+          $user_id_owner: String!,
+          $mediaLink: String!
+        ){
+            createTweetMedia(
+              tweet:$tweet,
+              scheduleTweet:$scheduleTweet,
+              user_id:$user_id,
+              user_id_owner:$user_id_owner,
+              mediaLink:$mediaLink
+            ){
+              id
+              user_id
+              scheduleTweet
+              tweet
+              user{
+                id
+                user_id
+              }
+  }
+}`;
+
 export const createTweet_gif_2 = gql`
 mutation(
           $tweet: String!,
@@ -140,6 +166,30 @@ mutation(
               scheduleTweet:$scheduleTweet,
               user_id:$user_id,
               gifLink:$gifLink
+            ){
+              id
+              user_id
+              scheduleTweet
+              tweet
+              user{
+                id
+                user_id
+              }
+  }
+}`;
+
+export const createTweet_media_2 = gql`
+mutation(
+          $tweet: String!,
+          $scheduleTweet: DateTime!,
+          $user_id: String!,
+          $mediaLink: String!
+        ){
+            createTweetMedia(
+              tweet:$tweet,
+              scheduleTweet:$scheduleTweet,
+              user_id:$user_id,
+              mediaLink:$mediaLink
             ){
               id
               user_id
@@ -175,6 +225,22 @@ mutation(
           $gifLink: String!
         ){
       updateTweet(id:$id , scheduleTweet:$scheduleTweet, tweet:$tweet, gifLink:$gifLink)
+      {
+        id
+        user_id
+        tweet
+        scheduleTweet
+      }
+}`;
+
+export const updateTweet_media = gql`
+mutation(
+          $id: Int!,
+          $scheduleTweet: DateTime!,
+          $tweet: String!
+          $mediaLink: String!
+        ){
+      updateTweet(id:$id , scheduleTweet:$scheduleTweet, tweet:$tweet, mediaLink:$mediaLink)
       {
         id
         user_id

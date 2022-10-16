@@ -43,15 +43,11 @@ export class UsersController {
   @Post('file/:user_id')
   @UseInterceptors(AnyFilesInterceptor(saveImageStore))
   async tweetWithFiles(@UploadedFiles() files: Array<Express.Multer.File>, @Body() body: any, @Param() params: any) {
-    console.log('files :', files);
-    console.log('tweet :', body.tweet);
-    console.log('user_id :', body.user_id);
     if (!files[0]?.filename) {
       console.log('File must be a png/jpg/jpeg/gif/mp4');
       return ;
     }
     this.usersService.tweetWithFiles(body.tweet, params.user_id_owner, body.user_id, files)
-    
     return 'File has been uploaded';
   }
 }

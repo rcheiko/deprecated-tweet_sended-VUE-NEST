@@ -104,6 +104,39 @@ export class TweetService {
     return tweet_created;
   }
 
+
+  async create_media(tweet: string, scheduleTweet: Date, user_id: string, mediaLink: string[], user_id_owner?:string): Promise<Tweet | void>
+  {
+    const user:any = await this.usersService.findOneId(user_id)
+        .catch((err) => {
+          console.log("error :", err);
+        });
+    let _tweet: Tweet;
+    if (user_id_owner != undefined) {
+      _tweet = this.tweetRepository.create({
+        tweet: tweet,
+        scheduleTweet:scheduleTweet,
+        user_id:user_id_owner,
+        mediaLink: mediaLink,
+        user: user
+      })
+    }
+    else {
+      _tweet = this.tweetRepository.create({
+        tweet: tweet,
+        scheduleTweet:scheduleTweet,
+        mediaLink: mediaLink,
+        user: user
+      })
+    }
+    const tweet_created = await this.tweetRepository.save(_tweet)
+        .catch((err) => {
+          console.log("error :", err)
+          return ;
+        });
+    return tweet_created;
+  }
+
   async findTweetUserMatch(user_id_owner: string): Promise<Tweet[] | void>
   {
     const res = await this.tweetRepository.find({
@@ -204,16 +237,23 @@ export class TweetService {
     return res;
   }
 
-  async updateTweet(id: number, scheduleTweet: Date, tweet: string, gifLink?: string): Promise<Tweet | void> {
-    if (gifLink === undefined) {
-      await this.tweetRepository.update(id, {scheduleTweet: scheduleTweet, tweet: tweet})
+  async updateTweet(id: number, scheduleTweet: Date, tweet: string, gifLink?: string, mediaLink?: string[]): Promise<Tweet | void> {
+    if (mediaLink) {
+      await this.tweetRepository.update(id, {scheduleTweet: scheduleTweet, tweet: tweet, mediaLink: mediaLink})
+        .catch((err) => {
+          console.log('error :', err);
+          return ;
+        })
+    }
+    else if (gifLink) {
+      await this.tweetRepository.update(id, {scheduleTweet: scheduleTweet, tweet: tweet, gifLink: gifLink})
         .catch((err) => {
           console.log('error :', err);
           return ;
         })
     }
     else {
-      await this.tweetRepository.update(id, {scheduleTweet: scheduleTweet, tweet: tweet, gifLink: gifLink})
+      await this.tweetRepository.update(id, {scheduleTweet: scheduleTweet, tweet: tweet})
         .catch((err) => {
           console.log('error :', err);
           return ;

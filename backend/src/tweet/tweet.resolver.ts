@@ -30,12 +30,24 @@ export class TweetResolver {
   }
 
   @UseGuards(JwtGuard)
+  @Mutation(() => Tweet, { name: 'createTweetMedia' })
+  createTweet_media(@Args('tweet', { type: () => String }) tweet: string,
+              @Args('scheduleTweet', { type: () => Date }) scheduleTweet: Date,
+              @Args('user_id', { type: () => String }) user_id: string,
+              @Args('mediaLink', { type: () => String }) mediaLink: string[],
+              @Args('user_id_owner', { nullable:true, type: () => String }) user_id_owner?: string
+              ): Promise<Tweet | void> {
+    return this.tweetService.create_media(tweet, scheduleTweet, user_id, mediaLink, user_id_owner);
+  }
+
+  @UseGuards(JwtGuard)
   @Mutation(() => Tweet)
   updateTweet(@Args('id', { type: () => Int }) id: number,
               @Args('scheduleTweet', { type: () => Date }) scheduleTweet: Date,
               @Args('tweet', { type: () => String }) tweet: string,
-              @Args('gifLink', { nullable:true, type: () => String }) gifLink?): Promise<Tweet | void> {
-    return this.tweetService.updateTweet(id, scheduleTweet, tweet, gifLink);
+              @Args('gifLink', { nullable:true, type: () => String }) gifLink?,
+              @Args('mediaLink', { nullable:true, type: () => Array<String> }) mediaLink?): Promise<Tweet | void> {
+    return this.tweetService.updateTweet(id, scheduleTweet, tweet, gifLink, mediaLink);
   }
 
   @UseGuards(JwtGuard)

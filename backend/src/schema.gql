@@ -53,6 +53,7 @@ type Mutation {
   removePermission(user_id_owner: String!, user_id: String!): User!
   createTweet(tweet: String!, scheduleTweet: DateTime!, user_id: String!, user_id_owner: String): Tweet!
   createTweetGif(tweet: String!, scheduleTweet: DateTime!, user_id: String!, gifLink: String!, user_id_owner: String): Tweet!
-  updateTweet(id: Int!, scheduleTweet: DateTime!, tweet: String!, gifLink: String): Tweet!
+  createTweetMedia(tweet: String!, scheduleTweet: DateTime!, user_id: String!, mediaLink: String!, user_id_owner: String): Tweet!
+  updateTweet(id: Int!, scheduleTweet: DateTime!, tweet: String!, gifLink: String, mediaLink: String): Tweet!
   removeTweet(id: Int!): [Tweet!]!
 }

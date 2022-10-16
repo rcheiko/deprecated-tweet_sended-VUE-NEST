@@ -41,7 +41,7 @@
 import { onBeforeMount, ref } from 'vue'
 import type { Ref } from 'vue'
 import { userInformationStore } from '@/stores/user_information'
-import { createTweet, createTweet_gif, updateTweet, updateTweet_gif } from '@/constants/graphql'
+import { createTweet, createTweet_gif, createTweet_media, updateTweet, updateTweet_gif, updateTweet_media } from '@/constants/graphql'
 import { useMutation } from '@vue/apollo-composable'
 import axios from 'axios'
 import authHeader from '@/services/auth-header'
@@ -55,8 +55,10 @@ import displaySchedule from '../components/tweet/displayScheduleTweet.vue'
 
 const { mutate: _createTweet, onDone: _createTweetDone } = useMutation(createTweet);
 const { mutate: _createTweetGif} = useMutation(createTweet_gif);
+const { mutate: _createTweetMedia, onDone: _createTweetMediaDone } = useMutation(createTweet_media);
 const { mutate: _updateTweet, onDone: _updateTweetDone } = useMutation(updateTweet);
 const { mutate: _updateTweet_gif, onDone: _updateTweet_gifDone } = useMutation(updateTweet_gif);
+const { mutate: _updateTweet_media, onDone: _updateTweet_mediaDone } = useMutation(updateTweet_media);
 
 const user = userInformationStore();
 
@@ -116,7 +118,6 @@ const tweet_for_someone = async() => {
     }
     if (dateScheduledTweet.value === undefined) {
         if (allPicture.value.length > 0) {
-            console.log('aaaaa');
             // Tweet with picture
             let formData = new FormData();
             for (let i = 0; allPicture.value[i]; i++) {
@@ -156,6 +157,21 @@ const tweet_for_someone = async() => {
     }
     else {
         if (allPicture.value.length > 0) {
+            console.log("ALL PICTURE :", allPicture.value);
+            
+            // await _createTweetMedia({
+            //     tweet: _tweet.value,
+            //     scheduleTweet: dateScheduledTweet.value,
+            //     mediaLink: gifToSend.value,
+            //     user_id_owner: user.id,
+            //     user_id: user_id
+            // })
+            // .catch((err: any) => {
+            //     console.log("error :", err);
+            //     return ;
+            // })
+            message_tweet.value = "The message has been Programmed."
+            hide_message();
             // tweet schedule with picture 
             console.log('All Picture');
         }
